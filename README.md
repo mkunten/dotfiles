@@ -1,0 +1,3 @@
+# dotfiles
+
+seiri shitara ageyou to omoinagara itsumademo agerarenainode age...

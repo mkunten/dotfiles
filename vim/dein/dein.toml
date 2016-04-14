@@ -1,0 +1,640 @@
+# basics {{{1
+# dein.vim
+[[plugins]]
+repo = 'Shougo/dein.vim'
+
+# utility commands of dein.vim
+[[plugins]]
+repo = 'haya14busa/dein-command.vim'
+depends = ['Shougo/dein.vim']
+
+# japanese documents
+[[plugins]]
+repo = 'vim-jp/vimdoc-ja'
+
+# vimproc
+[[plugins]]
+repo = 'Shougo/vimproc.vim'
+build = 'make'
+
+# vimshell
+[[plugins]]
+repo = 'Shougo/vimshell.vim'
+
+# webapi-vim
+[[plugins]]
+repo = 'mattn/webapi-vim'
+
+# local vimrc
+[[plugins]]
+repo = 'thinca/vim-localrc'
+
+# capture
+[[plugins]]
+repo = 'tyru/capture.vim'
+on_cmd = 'Capture'
+lazy = 1
+
+# utilities {{{1
+# git
+[[plugins]]
+repo = 'airblade/vim-gitgutter'
+hook_add = '''
+  " let g:gitgutter_enabled = 1
+  let g:gitgutter_signs = 0
+  " let g:gitgutter_highlight_lines = 0
+  nnoremap <Leader>gg
+    \ :<C-u>GitGutterSignsToggle<CR>:GitGutterLineHighlightsToggle<CR>
+  augroup MyVimrc
+    autocmd ColorScheme * highlight link GitGutterAdd DiffAdd
+    autocmd ColorScheme * highlight link GitGutterChange DiffChange
+    autocmd ColorScheme * highlight link GitGutterDelete DiffDelete
+    autocmd ColorScheme * highlight link GitGutterChangeDelete DiffChange
+  augroup END
+'''
+
+[[plugins]]
+repo = 'lambdalisue/vim-gita'
+# on_cmd = ['Gita']
+# lazy = 1
+
+# ag
+[[plugins]]
+repo = 'rking/ag.vim'
+on_cmd = ['Ag']
+lazy = 1
+
+[[plugins]]
+repo = 'thinca/vim-quickrun'
+# on_cmd = 'QuickRun'
+# on_map = '<Leader>r'
+hook_add = '''
+  let g:quickrun_config = get(g:, 'quickrun_config', {})
+  let s:config = {
+    \ '_': {
+    \   'runner': 'vimproc',
+    \   'runner/vimproc/updatetime': 60,
+    \   'outputter/buffer/split': ':botright 8sp',
+    \   'outputter': 'multi:buffer:error;null;quickfix',
+    \ },
+    \ 'wc': {
+    \   'cmdopt': '-lcmw',
+    \ },
+    \ 'coffee': {
+    \   'cmdopt': '-cbp'
+    \ },
+    \ 'jqReplace': {
+    \   'cmdopt': '.',
+    \   'outputter': 'error',
+    \   'outputter/error/success': 'replace_region',
+    \   'outputter/error/error': 'message',
+    \   'outputter/message/log': 1
+    \ },
+    \ 'jq': {
+    \   'command': 'jq',
+    \   'cmdopt': '.',
+    \   'outputter': 'error',
+    \   'outputter/error/success': 'multi:buffer:quickfix',
+    \   'outputter/error/error': 'message',
+    \   'outputter/message/log': 1
+    \ },
+    \ 'md': {
+    \   'outputter': 'browser'
+    \ }}
+  " \   'hook/close_buffer/enable_empty_data': 0,
+  " \   'hook/close_buffer/enable_failure': 0,
+  " \   'hook/close_quickfix/enable_exit': 0,
+  " \   'outputter/buffer/close_on_empty': 0
+  " \   'hook/unite_quickfix/enable_failure': 1,
+  " \   'hook/close_unite_quickfix/enable_hook_loaded': 1,
+  call extend(g:quickrun_config, s:config)
+  " close quickfix window
+  function! s:close_quickrunwindow() abort
+    for wnr in range(1, winnr('$'))
+      if getwinvar(wnr, '&filetype') is# 'quickrun'
+        execute wnr . 'wincmd w'
+        close
+        execute winnr('#') . 'wincmd w'
+        break
+      endif
+    endfor
+  endfunction
+  command! -bar -nargs=0 QuickRunClose :call <sid>close_quickrunwindow()
+  " jq wrapper
+  function! s:jq(...) range abort
+    echomsg mode()
+      if a:0 > 0
+        let cmdopt = ' -cmdopt "' . a:1 . '"'
+      else
+        let cmdopt = ''
+      endif
+      if a:outputter is# ''
+        let command = 'jq'
+      else
+        let command = 'jqQuickfix'
+    endif
+    execute printf('%s,%sQuickRun%s %s',
+      \ a:firstline, a:lastline, cmdopt, command)
+  endfunction
+  command! -nargs=? -range Jq :<line1>,<line2>call s:jq('', <f-args>)
+  command! -nargs=? -range JqQuickfix
+    \ :<line1>,<line2>call s:jq('multi:buffer:quickfix', <f-args>)
+
+  nnoremap <expr><silent> <C-c> quickrun#is_running()
+    \ ? quickrun#sweep_sessions() : '\<C-c>'
+  nnoremap <silent> <Leader>c :<C-u>QuickRunClose<CR>
+'''
+
+# extension for QuickRun
+[[plugins]]
+repo = 'osyo-manga/quickrun-outputter-replace_region'
+depends = ['quickrun']
+lazy = 1
+
+[[plugins]]
+repo = 'osyo-manga/shabadou.vim'
+lazy = 1
+
+# highlight quickfix erros/location list entries
+[[plugins]]
+repo = 'cohama/vim-hier'
+
+#
+[[plugins]]
+repo = 'dannyob/quickfixstatus'
+
+# syntax checker
+[[plugins]]
+repo = 'osyo-manga/vim-watchdogs'
+depends = ['quickrun', 'shabadou', 'hier', 'quickfixstatus']
+# on_cmd = ['WatchdogsRun', 'WatchdogsRunSilent']
+hook_add = '''
+  let g:watchdogs_check_BufWritePost_enable = 1
+  let g:quickrun_config = get(g:, 'quickrun_config', {})
+  let s:config = {
+    \ 'watchdogs_checker/vint': {
+    \   'command': 'vint',
+    \   'exec': '%c %o %s:p '
+    \ },
+    \ 'watchdogs_checker/toml': {
+    \   'command': 'tomlv',
+    \   'exec': '%c %o %s:p '
+    \ },
+    \ 'watchdogs_checker/go': {
+    \   'command': 'golint',
+    \   'exec': '%c %o %s:p '
+    \ },
+    \ 'vim/watchdogs_checker': {
+    \   'type': executable('vint') ? 'watchdogs_checker/vint' : ''
+    \ },
+    \ 'toml/watchdogs_checker': {
+    \   'type': executable('tomlv') ? 'watchdogs_checker/toml' : ''
+    \ },
+    \ 'javascript/watchdogs_checker': {
+    \   'type': executable('eslint') ? 'watchdogs_checker/eslint' : ''
+    \ },
+    \ 'go/watchdogs_checker': {
+    \   'type': executable('golint') ? 'watchdogs_checker/go' : ''
+    \ }}
+  call extend(g:quickrun_config, s:config)
+'''
+hook_post_source = '''
+  call watchdogs#setup(g:quickrun_config)
+'''
+
+# CtrlP
+[[plugins]]
+repo = 'ctrlpvim/ctrlp.vim'
+hook_add = '''
+  let g:ctrlp_map = '<Space>'
+  if executable('files')
+    let g:ctrlp_user_command = 'files -a %s'
+  endif
+'''
+
+# cpsm: CtrlP matcher: cannot be installed...
+[[plugins]]
+repo = 'nixprime/cpsm'
+build = 'PY3=ON ./install.sh' # libboost-program-options is needed
+depends = ['ctrlpvim/ctrlp.vim']
+hook_add = '''
+  let g:ctrlp_match_func = { 'match': 'cpsm#CtrlPMatch' }
+'''
+
+# view {{{1
+# webdevicons
+[[plugins]]
+repo = 'ryanoasis/vim-webdevicons'
+
+# lightline
+[[plugins]]
+repo = 'itchyny/lightline.vim'
+depends = ['gita', 'webdevicons', 'anzu']
+hook_add = '''
+  autocmd MyVimrc FileType vim,toml
+    \ command! -buffer -bar LightlineUpdate
+    \   :call lightline#init() | call lightline#colorscheme() | call lightline#update()
+  let g:lightline = {
+    \ 'active': {
+    \   'left': [['mode', 'paste'],
+    \     ['LLgita', 'LLfilename', 'LLstatus', 'LLanzu']],
+    \   'right': [['LLlinecolnum'], ['LLcharinfo'],
+    \     ['LLfiletype', 'LLfileinfo']]
+    \ },
+    \ 'inactive': {
+    \   'left': [['mode', 'paste'],
+    \     ['LLgita', 'LLfilename', 'LLstatus', 'LLanzu']],
+    \   'right': [['LLlinecolnum'], ['LLcharinfo'],
+    \     ['LLfiletype', 'LLfileinfo']]
+    \ },
+    \ 'tabline': {
+    \   'left': [['LLcwd'], ['tabs']],
+    \   'right': [['close']]
+    \ },
+    \ 'tab': {
+    \   'active': ['tabnum', 'LLtabfilenameactive', 'modified'],
+    \   'inactive': ['tabnum', 'LLtabfilenameinactive', 'modified']
+    \ },
+    \ 'component': {
+    \   'LLstatus': '%{&modified ? "+" : (&ro ? "⭤" : "-")}',
+    \   'LLlinecolnum': '%4l/%L:%3c',
+    \   'LLcharinfo': '%04B',
+    \   'LLfiletype': '%{&filetype !=# "" ? &filetype . " " . WebDevIconsGetFileTypeSymbol() : "*no ft*"}',
+    \   'LLfileinfo': '%{&fileencoding !=# "" ? &fileencoding : &encoding}%{&ff !=? "unix" ? "[" . &ff . "]" : ""}',
+    \   'LLcwd': '%#comment#%{getcwd() . "/"}%*'
+    \ },
+    \ 'component_function': {
+    \   'LLgita': 'my#lightline#gita_status',
+    \   'LLfilename': 'my#lightline#filename',
+    \   'LLanzu': 'anzu#search_status'
+    \ },
+    \ 'tab_component_function': {
+    \   'LLtabfilenameactive': 'my#lightline#tab_filename_active',
+    \   'LLtabfilenameinactive': 'my#lightline#tab_filename_inactive'
+    \ }}
+'''
+
+# show zenkaku space
+[[plugins]]
+repo = 'thinca/vim-zenspace'
+
+# show tabindent
+[[plugins]]
+repo = 'nathanaelkane/vim-indent-guides'
+
+# show matching parens
+[[plugins]]
+repo = 'vim-scripts/matchparenpp'
+
+# fold
+[[plugins]]
+repo = 'LeafCage/foldCC'
+
+# anzu
+[[plugins]]
+repo = 'osyo-manga/vim-anzu'
+hook_add = '''
+  nmap n <Plug>(anzu-n)
+  nmap N <Plug>(anzu-N)
+  " nmap * <Plug>(anzu-star)
+  " nmap # <Plug>(anzu-sharp)
+  autocmd MyVimrc CursorHold,CursorHoldI,WinLeave,TabLeave *
+    \ call anzu#clear_search_status()
+'''
+
+# move {{{1
+[[plugins]]
+repo = 'deris/vim-shot-f'
+
+[[plugins]]
+repo = 'haya14busa/incsearch.vim'
+depends = ['anzu']
+hook_add = '''
+  map / <Plug>(incsearch-forward)
+  map ? <Plug>(incsearch-backward)
+  map g/ <Plug>(incsearch-stay)
+
+  " let g:incsearch#auto_nohlsearch = 1
+  " map n <Plug>(incsearch-nohl)<Plug>(anzu-n-with-echo)
+  " map N <Plug>(incsearch-nohl)<Plug>(anzu-N-with-echo)
+  " map * <Plug>(incsearch-nohl)<Plug>(anzu-star-with-echo)
+  " map # <Plug>(incsearch-nohl)<Plug>(anzu-sharp-with-echo)
+  " map g* <Plug>(incsearch-nohl-g*)
+  " map g# <Plug>(incsearch-nohl-g#)
+'''
+
+[[plugins]]
+repo = 'haya14busa/vim-asterisk'
+depends = ['anzu', 'incsearch']
+hook_add = '''
+  map * <Plug>(incsearch-nohl0)<Plug>(asterisk-z*)<Plug>(anzu-update-search-status-with-echo)
+  map g* <Plug>(incsearch-nohl0)<Plug>(asterisk-gz*)
+  map # <Plug>(incsearch-nohl0)<Plug>(asterisk-z#)
+  map g# <Plug>(incsearch-nohl0)<Plug>(asterisk-gz#)
+'''
+
+# gf
+[[plugins]]
+repo = 'kana/vim-gf-user'
+
+[[plugins]]
+repo = 'kana/vim-gf-diff'
+depends = 'kana/vim-gf-user'
+
+[[plugins]]
+repo = 'sgur/vim-gf-autoload'
+depends = 'kana/vim-gf-user'
+
+# edit {{{1
+# undotree: \u
+# [[plugins]]
+# repo = 'mbbill/undotree'
+# on_cmd = ['UndotreeToggle', 'UndotreeShow', 'UndotreeHide', 'UndotreeFocus']
+
+# yankround: C-p/C-n
+[[plugins]]
+repo = 'LeafCage/yankround.vim'
+hook_add = '''
+  nmap p <Plug>(yankround-p)
+  xmap p <Plug>(yankround-p)
+  nmap P <Plug>(yankround-P)
+  nmap gp <Plug>(yankround-gp)
+  xmap gp <Plug>(yankround-gp)
+  nmap gP <Plug>(yankround-gP)
+  nmap <C-p> <Plug>(yankround-prev)
+  nmap <C-n> <Plug>(yankround-next)
+'''
+
+# toggle comment: n: gcc; v: gc
+[[plugins]]
+repo = 'tomtom/tcomment_vim'
+
+# niceblock
+[[plugins]]
+repo = 'kana/vim-niceblock'
+
+# diffchar
+[[plugins]]
+repo = 'vim-scripts/diffchar.vim'
+on_cmd = 'Diffchar'
+
+# QuickFix replace
+[[plugins]]
+repo = 'thinca/vim-qfreplace'
+on_cmd = 'Qfreplace'
+
+# zen-coding
+[[plugins]]
+repo = 'mattn/emmet-vim'
+
+# table
+[[plugins]]
+repo = 'h1mesuke/vim-alignta'
+on_cmd = 'Alignta'
+lazy = 1
+
+# AndrewRadev/splitjoin.vim': n: g[SJ]
+[[plugins]]
+repo = 'AndrewRadev/splitjoin.vim'
+on_cmd = ['SplitjoinSplit', 'SplitjoinJoin']
+hook_add = '''
+  nnoremap <silent> gS :<C-u>SplitjoinSplit<CR>
+  nnoremap <silent> gJ :<C-u>SplitjoinJoin<CR>
+'''
+lazy = 1
+
+# dot repeat
+[[plugins]]
+repo = 'haya14busa/vim-metarepeat'
+
+# template
+repo = 'mattn/sonictemplate-vim'
+on_cmd = ['Template']
+on_map = [ '<C-y>' ]
+lazy = 1
+hook_add = '''
+  let g:sonictemplate_vim_template_dir = $VIMHOME . '/template'
+'''
+
+# text object {{{1
+# operator: {{{2
+[[plugins]]
+repo = 'kana/vim-operator-user'
+
+# replace: R(textobj)
+[[plugins]]
+repo = 'kana/vim-operator-replace'
+depends = ['kana/vim-operator-user']
+hook_add = '''
+  nmap <silent> R <Plug>(operator-replace)
+'''
+
+# surround: s[adr](textobj) *surround append/delete/replace
+[[plugins]]
+repo = 'rhysd/vim-operator-surround'
+depends = ['kana/vim-operator-user', 'thinca/vim-textobj-between']
+hook_add = '''
+  nmap <silent> sa <Plug>(operator-surround-append)
+  nmap <silent> sd <Plug>(operator-surround-delete)
+  nmap <silent> sr <Plug>(operator-surround-replace)
+  nmap <silent> sdf <Plug>(operator-surround-delete)<Plug>(textobj-between-a)
+  nmap <silent> srf <Plug>(operator-surround-replace)<Plug>(textobj-between-a)
+'''
+
+# html escape: sh[eu](textobj) *html escape/unescape
+[[plugins]]
+repo = 'tyru/operator-html-escape.vim'
+depends = ['kana/vim-operator-user']
+hook_add = '''
+  nmap <silent> she <Plug>(operator-html-escape)
+  nmap <silent> shu <Plug>(operator-html-unescape)
+'''
+
+# snake_case <=> camelCase: s[cC~](textobj) *snake ... 
+[[plugins]]
+repo = 'tyru/operator-camelize.vim'
+depends = ['kana/vim-operator-user']
+hook_add = '''
+  nmap <silent> sc <Plug>(operator-camelize)
+  nmap <silent> sC <Plug>(operator-decamelize)
+  nmap <silent> s~ <Plug>(operator-camelize-toggle)
+'''
+
+# flashy
+[[plugins]]
+repo = 'haya14busa/vim-operator-flashy'
+depends = ['kana/vim-operator-user']
+hook_add = '''
+  map y <Plug>(operator-flashy)
+  nmap Y <plug>(operator-flashy)
+'''
+
+# text object {{{2
+[[plugins]]
+repo = 'kana/vim-textobj-user'
+
+#[[plugins]]
+#repo = 'kana/vim-textobj-jabraces'
+#depends = ['kana/vim-textobj-user']
+
+[[plugins]]
+repo = 'kana/vim-textobj-entire'# e
+depends = ['kana/vim-textobj-user']
+
+[[plugins]]
+repo = 'kana/vim-textobj-line'# l
+depends = ['kana/vim-textobj-user']
+
+[[plugins]]
+repo = 'kana/vim-textobj-indent'# i/I
+depends = ['kana/vim-textobj-user']
+
+[[plugins]]
+repo = 'kana/vim-textobj-fold'# z
+depends = ['kana/vim-textobj-user']
+
+[[plugins]]
+repo = 'kana/vim-textobj-syntax'# y
+depends = ['kana/vim-textobj-user']
+
+[[plugins]]
+repo = 'glts/vim-textobj-comment'# c
+depends = ['kana/vim-textobj-user']
+
+[[plugins]]
+repo = 'mattn/vim-textobj-url'# u
+depends = ['kana/vim-textobj-user']
+
+[[plugins]]
+repo = 'osyo-manga/vim-textobj-multiblock'# b
+depends = ['kana/vim-textobj-user']
+
+[[plugins]]
+repo = 'osyo-manga/vim-textobj-multitextobj'
+depends = ['kana/vim-textobj-user']
+
+[[plugins]]
+repo = 'kana/vim-textobj-function'# f/F
+depends = ['kana/vim-textobj-user']
+
+[[plugins]]
+repo = 'thinca/vim-textobj-function-javascript'
+depends = ['kana/vim-textobj-function']
+
+[[plugins]]
+repo = 'sgur/vim-textobj-parameter'# ,
+depends = ['kana/vim-textobj-user']
+
+[[plugins]]
+repo = 'Julian/vim-textobj-variable-segment'# v
+depends = ['kana/vim-textobj-user']
+
+[[plugins]]
+repo = 'thinca/vim-textobj-between'# f{char}
+depends = ['kana/vim-textobj-user']
+
+# filetypes {{{1
+# toml {{{2
+[[plugins]]
+repo = 'cespare/vim-toml'
+on_ft = 'toml'
+
+# vim {{{2
+[[plugins]]
+repo = 'machakann/vim-Verdin'
+on_ft = 'vim'
+
+# javascript {{{2
+[[plugins]]
+repo = 'othree/yajs.vim'
+on_ft = 'javascript'
+
+[[plugins]]
+repo = 'othree/javascript-libraries-syntax.vim'
+on_ft = 'javascript'
+hook_add = '''
+  let g:used_javascript_libs='jquery'
+'''
+
+[[plugins]]
+repo = 'marijnh/tern_for_vim'
+build = 'npm install'
+on_ft = 'javascript'
+
+[[plugins]]
+repo = 'fatih/vim-go'
+on_ft = 'go'
+
+# references {{{1
+# vim-ref
+[[plugins]]
+repo = 'thinca/vim-ref'
+on_cmd = 'Ref'
+hook_add = '''
+  " preparation
+  let g:ref_rootdir = expand('$VIMHOME/ref/')
+  call my#util#mkdir_if_not_exist(g:ref_rootdir, 1)
+  " php
+  let g:ref_phpmanual_path = g:ref_rootdir . 'php-chunked-xhtml'
+  if !isdirectory(g:ref_phpmanual_path) &&
+      \ (input('ref/phpmanual is not prepared. Prepare? [y/N] ')
+      \ =~? '^y\%[es]$')
+    echon 'Prepareing ref/phpmanual...'
+    echomsg system('cd ' . shellescape(g:ref_rootdir) .
+          \ ' && wget -O - http://jp2.php.net/get/php_manual_ja.tar.gz/from/this/mirror | tar xzvf -')
+    echon 'done.'
+  endif
+
+  " settings
+  command! -nargs=1 DictTibDetail
+    \ :Ref<Space>webdict<Space>tib<Space><f-args>
+  command! -nargs=1 DictTibSearch
+    \ :Ref<Space>webdict<Space>tibs<Space><f-args>
+  let g:ref_source_webdict_sites = {
+    \   'alc': {
+    \     'url': 'http://eow.alc.co.jp/%s/UTF-8/'
+    \   },
+    \   'tib': {
+    \     'url': 'http://ircdict.aa-ken.jp/starvdic/entries/%s.html'
+    \   },
+    \   'tibs': {
+    \     'url': 'http://ircdict.aa-ken.jp/starvdic/search.html?q=%s'
+    \   }
+    \ }
+  function! g:ref_source_webdict_sites.alc.filter(output)
+    return join(split(a:output, "\n")[42:], "\n")
+  endfunction
+'''
+
+# epwing
+[[plugins]]
+repo = 'deton/eblook.vim'
+
+# codic
+[[plugins]]
+repo = 'osyo-manga/codic-vim'
+
+# browser {{{1
+[[plugins]]
+repo = 'osyo-manga/ref-lynx'
+depends = ['thinca/vim-ref']
+
+[[plugins]]
+repo = 'tyru/open-browser.vim'
+on_func = ['openbrowser#open']
+on_cmd = ['OpenBrowser', 'OpenBrowserSearch', 'OpenBrowserSmartSearch']
+lazy = 1
+hook_add = '''
+  let g:openbrowser_browser_commands = [{
+    \   'background': 1,
+    \   'name': 'lemo',
+    \   'args': ['{browser}', '{uri}']
+    \ }]
+'''
+
+# others
+[[plugins]]
+repo = 'deris/vim-duzzle'
+on_cmd = ['Duzzle']
+lazy = 1
+

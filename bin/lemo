@@ -1,0 +1,60 @@
+#!/bin/bash
+# lemo: open url through lemonade
+# https://github.com/pocke/lemonade
+
+# constants
+PROGNAME="$(basename $0)"
+GITHUB='https://github.com/'
+BITBUCKET='https://bitbucket.org/'
+repo="${GITHUB}"
+search="https://www.google.co.jp/search?q=%s"
+is_verbose=false
+
+# generic functions
+usage_exit() {
+  echo "${PROGNAME}: open url/repo through lemonade"
+  echo "Usage: ${PROGNAME} URL/query_word_for_google/repo(*.git)"
+  echo 'Options:'
+  echo '  -h  show help'
+  echo '  -g  use github as a repo (default)'
+  echo '  -b  use bitbucket as a repo'
+  echo "  -s  url for searching (default: ${search})"
+  echo 'E.g.:'
+  echo "  ${PROGNAME} https://www.google.com/ => open https://www.google.com"
+  echo "  ${PROGNAME} bash git                => search "bash git" in google"
+  echo "  ${PROGNAME} foo/bar                 => open foo/bar repo in github"
+  echo "  ${PROGNAME} foo/bar.git             => open foo/bar repo in github"
+  echo "  ${PROGNAME} -b foo/bar              => open foo/bar repo in bitbucket"
+  exit 1
+}
+
+# options
+is_repo=1
+while getopts 'hvgbs:' flag; do
+  case "${flag}" in
+    h) usage_exit ;;
+    v) is_verbose=true ;;
+    g) repo="${GITHUB}"  ;;
+    b) repo="${BITBUCKET}" ;;
+    s) search="${OPTARG}" ;;
+    *) usage_exit ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+# main
+target="$@"
+
+if [[ "${target}" =~ ^([A-Za-z._-]+/[A-Za-z._-]+)(\.git)?$ ]]; then
+  target="${repo}${BASH_REMATCH[1]%\.git}.git"
+elif [[ ! "${target}" =~ ^(https?|file):// ]]; then
+  target=$(printf "${search}" "${target}")
+  #target=$(printf "${search}" "$(echo "${target}" | nkf -WwMQ | tr = %)")
+fi
+
+lemonade open "${target}"
+if ${is_verbose}; then
+  echo ${target}
+fi
+
+# ft=shell
