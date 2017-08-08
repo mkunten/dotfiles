@@ -1,0 +1,76 @@
+[global_config]
+  enabled_plugins = TerminalShot, LaunchpadCodeURLHandler, APTURLHandler, Logger, LaunchpadBugURLHandler
+  handle_size = 0
+  suppress_multiple_term_dialog = True
+  tab_position = left
+  title_inactive_bg_color = "#000000"
+  title_inactive_fg_color = "#C0BEBF"
+  title_receive_bg_color = "#606868"
+  title_receive_fg_color = "#000000"
+  title_transmit_bg_color = "#C0BEBF"
+  title_transmit_fg_color = "#000000"
+[keybindings]
+  close_term = <Alt><Super>w
+  close_window = <Alt><Super>q
+  go_down = <Alt><Super>j
+  go_left = <Alt><Super>h
+  go_next = <Alt><Super>n
+  go_prev = <Alt><Super>p
+  go_right = <Alt><Super>l
+  go_up = <Alt><Super>k
+  page_down_half = <Primary><Shift>d
+  page_up_half = <Primary><Shift>u
+  resize_down = <Primary><Shift><Super>j
+  resize_left = <Primary><Shift><Super>h
+  resize_right = <Primary><Shift><Alt>l
+  resize_up = <Primary><Shift><Super>k
+  scaled_zoom = <Alt><Super>z
+  search = <Alt><Super>f
+  split_horiz = <Alt><Super>o
+  split_vert = <Alt><Super>e
+  toggle_scrollbar = None
+  toggle_zoom = None
+[layouts]
+  [[default]]
+    [[[child1]]]
+      parent = window0
+      type = Terminal
+    [[[window0]]]
+      parent = ""
+      type = Window
+  [[mkdefault]]
+    [[[child0]]]
+      order = 0
+      parent = ""
+      position = 1021:0
+      size = 899, 1171
+      type = Window
+    [[[terminal1]]]
+      order = 0
+      parent = child0
+      profile = default
+      type = Terminal
+  [[mksub]]
+    [[[child0]]]
+      order = 0
+      parent = ""
+      position = 6:0
+      size = 1015, 1171
+      type = Window
+    [[[terminal1]]]
+      order = 0
+      parent = child0
+      profile = default
+      type = Terminal
+[plugins]
+[profiles]
+  [[default]]
+    background_darkness = 0.85
+    background_image = None
+    background_type = transparent
+    backspace_binding = control-h
+    cursor_blink = False
+    delete_binding = ascii-del
+    font = Ricty NF 14
+    scrollback_infinite = True
+    use_system_font = False

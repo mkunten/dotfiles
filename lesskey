@@ -1,0 +1,6 @@
+#command
+h left-scroll
+l right-scroll
+#env
+LESS=--shift 5
+

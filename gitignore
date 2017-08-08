@@ -1,0 +1,5 @@
+.vim/bundle
+.vim/ref
+.vim/tmp
+bower_components
+node_modules
