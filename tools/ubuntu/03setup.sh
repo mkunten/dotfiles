@@ -41,16 +41,22 @@ git config --global ghq.root '~/dev/src'
 # golang tools
 export GOPATH=~/dev
 export PATH=$PATH:$HOME/bin:$GOPATH/bin
-go get golang.org/x/tools/cmd/...
-go get github.com/motemen/ghq
-go get github.com/mattn/mkup
-go get --shallow peco/peco
-cd ~/dev/src/github.com/peco/peco
+go get -u golang.org/x/tools/cmd/...
+go get -u github.com/BurntSushi/toml/cmd/tomlv
+go get -u github.com/dinedal/textql/...
+go get -u github.com/mattn/mkup
+go get -u github.com/motemen/ghq
+# peco
+go get -d peco/peco
+cd ${GOPATH}/src/github.com/peco/peco
 glide install
 go build cmd/peco/peco.go
 mv peco ~/dev/bin/
+# lemonade
+go get -d github.com/pocke/lemonade
+cd ${GOPATH}/src/github.com/pocke/lemonade
+make install
 
-go get github.com/peco/peco/cmd/peco
 # git repos
 ghq get --shallow git@github.com:mkunten/dotfiles.git
 ghq get --shallow git@github.com:mkunten/others.git
