@@ -30,7 +30,7 @@ let s:dein_dir = expand('$VIMHOME/dein')
 let s:dein_toml = s:dein_dir . '/dein.toml'
 let s:dein_repo = 'github.com/Shougo/dein.vim'
 let s:dein_repo_dir = s:dein_dir . '/repos/' . s:dein_repo
-let s:dein_local_repo_dir = expand('$VIMHOME/dein.local/')
+let s:dein_local_repo_dir = expand('$VIMHOME/dein.local')
 
 " Prepare directories {{{1
 silent call my#util#mkdir_if_not_exist(s:swapfile_dir, 1)
@@ -205,12 +205,11 @@ function! s:toggle_keymap_mk() abort
 endfunction
 inoremap <silent> <C-u> <C-o>:call <SID>toggle_keymap_mk()<CR>
 
-" some commands for vim setting
+" some commands for editing vim settings
 command! Evimrc edit $MYVIMRC
 command! Edeintoml execute('edit ' . s:dein_toml)
 nnoremap <silent> <F5> :<C-u>source $MYVIMRC<CR>
         \ :echomsg '$MYVIMRC reloaded.'<CR>
-":colorscheme desert<CR>
 
 " show hilighting group under the cursor
 command! SyntaxInfo call my#util#get_syn_info()
@@ -236,7 +235,7 @@ if filereadable(s:dein_toml)
   if dein#load_state(s:dein_dir)
     call dein#begin(s:dein_dir, [$MYVIMRC, s:dein_toml])
     call dein#load_toml(s:dein_toml)
-    call dein#local('/home/mkunten/.vim/dein.local', {'frozen': 1},
+    call dein#local(s:dein_local_repo_dir, {'frozen': 1},
           \ ['vim-scripts/VOoM'])
     call dein#end()
     call dein#save_state()
@@ -248,38 +247,10 @@ endif
 
 " mkup
 " https://github.com/mattn/mkup 
-let g:mkup_is_running = 0
 if executable('mkup')
-  function! s:mkup(...) abort
-    let l:cmd = get(a:000, 0, '')
-    let l:port = get(a:000, 1, 8000)
-    let l:host = get(a:000, 2, 'http://localhost')
-    if cmd ==# 'start'
-      echomsg system("mkup --http ':"  . l:port . "' &")
-      echomsg 'mkup started'
-      let g:mkup_is_running = 1
-    elseif cmd ==# 'status'
-      echomsg printf('mukup is %srunning', g:mkup_is_running ? '' : 'not ')
-    elseif cmd ==# 'stop'
-      echomsg system('pkill mkup')
-      echomsg 'mkup stopped'
-      let g:mkup_is_running = 0
-    elseif cmd ==# 'open'
-      if !g:mkup_is_running
-        echomsg system("mkup --http ':"  . l:port . "' &")
-        let g:mkup_is_running = 1
-      endif
-      call openbrowser#open(printf('%s:%d/%s', l:host, l:port, expand('%')))
-    else
-      echomsg "Usage: :Mkup (start [port] [host]|status|stop|open)"
-      echomsg "       port: default: 8000\r\n"
-      echomsg "       host: default: http://localhost"
-    endif
-  endfunction
-
   augroup MyVimrc
-    autocmd filetype markdown command! -buffer -nargs=? Mkup call <SID>mkup(<f-args>)
-
+    autocmd filetype markdown command! -buffer -nargs=? Mkup
+          \ call my#util#mkup(<f-args>)
     autocmd BufDelete *.md call <SID>mkup('stop')
     autocmd VimLeave * call <SID>mkup('stop')
   augroup END
@@ -289,6 +260,7 @@ endif
 
 " {{{1
 filetype plugin indent on
+syntax enable
 
 " #modeline {{{1
 " vim: fdm=marker fdl=4 fdc=3 et ts=2 sts=2

@@ -83,3 +83,33 @@ function! my#util#auto_cursorline(event)
     let s:cursorline_lock = 1
   endif
 endfunction
+
+" mkup
+let g:mkup_is_running = 0
+function! my#util#mkup(...) abort
+  let l:cmd = get(a:000, 0, '')
+  let l:port = get(a:000, 1, 8000)
+  let l:host = get(a:000, 2, 'http://localhost')
+  if cmd ==# 'start'
+    echomsg system("mkup --http ':"  . l:port . "' &")
+    echomsg 'mkup started'
+    let g:mkup_is_running = 1
+  elseif cmd ==# 'status'
+    echomsg printf('mukup is %srunning', g:mkup_is_running ? '' : 'not ')
+  elseif cmd ==# 'stop'
+    echomsg system('pkill mkup')
+    echomsg 'mkup stopped'
+    let g:mkup_is_running = 0
+  elseif cmd ==# 'open'
+    if !g:mkup_is_running
+      echomsg system("mkup --http ':"  . l:port . "' &")
+      let g:mkup_is_running = 1
+    endif
+    call openbrowser#open(printf('%s:%d/%s', l:host, l:port, expand('%')))
+  else
+    echomsg "Usage: :Mkup (start [port] [host]|status|stop|open)"
+    echomsg "       port: default: 8000\r\n"
+    echomsg "       host: default: http://localhost"
+  endif
+endfunction
+
