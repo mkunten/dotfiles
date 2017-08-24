@@ -154,7 +154,7 @@ inoremap <silent> <Esc> <Esc>:keepjumps normal! `^<CR>
 
 " ColorScheme {{{1
 "set term=xterm-256color
-set t_Co=256
+"set t_Co=256
 function! s:setColors()
   highlight LineNr cterm=NONE ctermfg=6 guifg=darkcyan
   highlight NonText cterm=NONE ctermfg=238 guifg=Blue

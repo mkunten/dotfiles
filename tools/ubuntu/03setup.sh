@@ -102,6 +102,11 @@ function gcd() {
 if [ -f "$HOME/.anyenv/bin/anyenv" ]; then
   eval "$($HOME/.anyenv/bin/anyenv init -)"
 fi
+
+# workaround for terminator bug
+# https://askubuntu.com/questions/446076/change-environment-variable-term
+[[ $COLORTERM = gnome-terminal && ! $TERM = screen-256color ]] && \
+  TERM=xterm-256color
 EOS
 
 ## web & sql
