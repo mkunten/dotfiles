@@ -194,7 +194,8 @@ autocmd MyVimrc InsertLeave *
       \ if &diff | diffupdate | echo 'diffupdated' | endif
 
 " show swapfiles
-command! Swapfiles echo vimproc#system('vim -r')
+" command! Swapfiles echo vimproc#system('vim -r')
+command! Swapfiles QuickRun swapfiles
 
 if has('xim') || has('multi_byte_ime') || has('global-ime')
   set iminsert=2
