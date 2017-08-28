@@ -67,7 +67,8 @@ ghq get --shallow riywo/anyenv
 ln -s ~/.anyenv ~/dev/src/github.com/riywo/anyenv
 # path/init todo
 anyenv install ndenv
-ndenv install v6.3.0
+ndenv install v8.4.0
+ndenv global v8.4.0
 
 # symlink/cp
 ln -s ~/dev/src/github.com/mkunten/dotfiles/vim ~/.vim
@@ -137,8 +138,10 @@ sudo -u postgres -s createuser -sdrlP $(id -un)
 # reload
 sudo systemctl restart postgresql
 sudo systemctl restart apache2
-# nodejs
-#sudo npm install -g coffee-script js2coffee uglify-js pm2
+
+# nodejs tools
+npm install -g eslint coffee-script js2coffee uglify-js pm2
+ndenv rehash
 
 # texlive
 ln -s ~/dev/src/github.com/mkunten/texmf ~/texmf
