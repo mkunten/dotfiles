@@ -24,6 +24,7 @@ let $MYVIMRC = resolve($MYVIMRC)
 " script variables {{{1
 let $VIMHOME = expand('$HOME/.vim')
 let s:tmp_dir = expand('$VIMHOME/tmp')
+let s:undofile_dir = s:tmp_dir . '/undofiles'
 let s:swapfile_dir = s:tmp_dir . '/swapfiles'
 " dein.vim
 let s:dein_dir = expand('$VIMHOME/dein')
@@ -33,6 +34,7 @@ let s:dein_repo_dir = s:dein_dir . '/repos/' . s:dein_repo
 let s:dein_local_repo_dir = expand('$VIMHOME/dein.local')
 
 " Prepare directories {{{1
+silent call my#util#mkdir_if_not_exist(s:undofile_dir, 1)
 silent call my#util#mkdir_if_not_exist(s:swapfile_dir, 1)
 
 " Options {{{1
@@ -48,11 +50,11 @@ scriptencoding utf-8
 set list
 set listchars=eol:$,tab:>\ ,trail:_,nbsp:%
 set ambiwidth=double
-set showmatch matchtime=1 matchpairs+=<:>
+set showmatch matchtime=1 matchpairs& matchpairs+=<:>
 set showcmd
 set notimeout ttimeout ttimeoutlen=200
 set number
-set display+=lastline
+set display& display+=lastline
 set scrolloff=2
 set laststatus=2
 set cmdheight=2
@@ -60,15 +62,18 @@ set showtabline=2
 set belloff=all
 " split {{{3
 set splitbelow splitright
-set diffopt+=vertical
+set diffopt& diffopt+=vertical
 " help {{{3
 set helpheight=12
 set helplang=en
 set keywordprg=:help
 " edit {{{2
+" undo {{{3
+let &undodir = s:undofile_dir
+set undofile
 " motion {{{3
-set whichwrap+=< whichwrap+=> whichwrap+=[ whichwrap+=]
-set backspace+=indent backspace+=eol backspace+=start
+set whichwrap& whichwrap+=< whichwrap+=> whichwrap+=[ whichwrap+=]
+set backspace& backspace+=indent backspace+=eol backspace+=start
 set nostartofline
 " search {{{3
 set incsearch
@@ -83,14 +88,6 @@ set infercase
 " clipboard {{{3
 " default: clipboard=autoselect,exclude:cons\|linux
 set clipboard=autoselectplus,exclude:cons\|linux
-if has('patch-8.0.0238')
-  if &term =~ "screen"
-    let &t_BE = "\e[?2004h"
-    let &t_BD = "\e[?2004l"
-    exec "set t_PS=\e[200~"
-    exec "set t_PE=\e[201~"
-  endif
-endif
 " indent {{{3
 set autoindent
 set smartindent
@@ -100,14 +97,14 @@ set tabstop=2
 set expandtab
 set shiftround
 " others {{{3
-set formatoptions+=j
+set formatoptions& formatoptions+=j
 set mouse=a
-set nrformats-=octal
+set nrformats& nrformats-=octal
 set virtualedit=block
 set modeline
 set hidden
 set confirm
-execute 'set directory=' . s:swapfile_dir
+let &directory = s:swapfile_dir
 
 " Key Mappings {{{1
 " view {{{2
@@ -142,6 +139,7 @@ cnoremap <C-e> <End>
 cnoremap <C-f> <Right>
 cnoremap <M-b> <S-Left>
 cnoremap <M-f> <S-Right>
+cnoremap <C-x> <Del>
 " swap completion behaviors
 cnoremap <C-n> <Down>
 cnoremap <C-p> <Up>
@@ -252,8 +250,8 @@ if executable('mkup')
   augroup MyVimrc
     autocmd filetype markdown command! -buffer -nargs=? Mkup
           \ call my#util#mkup(<f-args>)
-    autocmd BufDelete *.md call <SID>mkup('stop')
-    autocmd VimLeave * call <SID>mkup('stop')
+    autocmd BufDelete *.md call my#util#mkup('stop')
+    autocmd VimLeave * call my#util#mkup('stop')
   augroup END
 else
   echomsg 'mkup is not installed!'
