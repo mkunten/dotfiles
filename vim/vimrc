@@ -139,6 +139,7 @@ cnoremap <C-e> <End>
 cnoremap <C-f> <Right>
 cnoremap <M-b> <S-Left>
 cnoremap <M-f> <S-Right>
+"
 cnoremap <C-x> <Del>
 " swap completion behaviors
 cnoremap <C-n> <Down>
@@ -149,6 +150,10 @@ cnoremap <Up> <C-p>
 " keep curor pos when exiting from insert mode
 "inoremap <silent> <Esc> <Esc>`^
 inoremap <silent> <Esc> <Esc>:keepjumps normal! `^<CR>
+
+" workaround for cursor keys in insert mode
+inoremap <Esc>OB <Down>
+inoremap <Esc>OA <Up>
 
 " ColorScheme {{{1
 "set term=xterm-256color
@@ -166,7 +171,7 @@ function! s:setColors()
   highlight DiffChange cterm=bold ctermbg=127
   highlight DiffText cterm=bold ctermfg=15 ctermbg=0
 endfunction
-autocmd MyVimrc VimEnter,ColorScheme * call s:setColors()
+autocmd MyVimrc ColorScheme * call s:setColors()
 colorscheme desert
 
 " Other variables/commands/functions {{{1
@@ -197,6 +202,10 @@ command! Swapfiles QuickRun swapfiles
 
 if has('xim') || has('multi_byte_ime') || has('global-ime')
   set iminsert=2
+  set imsearch=-1
+  if executable('fcitx-remote')
+    autocmd MyVimrc InsertLeave * call system('fcitx-remote -c')
+  endif
 endif
 " toggle keymapping for input method
 function! s:toggle_keymap_mk() abort
@@ -208,7 +217,7 @@ inoremap <silent> <C-u> <C-o>:call <SID>toggle_keymap_mk()<CR>
 command! Evimrc edit $MYVIMRC
 command! Edeintoml execute('edit ' . s:dein_toml)
 nnoremap <silent> <F5> :<C-u>source $MYVIMRC<CR>
-        \ :echomsg '$MYVIMRC reloaded.'<CR>
+      \ :echomsg '$MYVIMRC reloaded.'<CR>
 
 " show hilighting group under the cursor
 command! SyntaxInfo call my#util#get_syn_info()
@@ -217,11 +226,11 @@ command! ShowHighlightTest source $VIMRUNTIME/syntax/hitest.vim
 
 " make directory automatically
 autocmd MyVimrc BufWritePre *
-  \ call my#util#mkdir_if_not_exist(expand('<afile>:p:h'), v:cmdbang)
+      \ call my#util#mkdir_if_not_exist(expand('<afile>:p:h'), v:cmdbang)
 
 " remove empty file
 autocmd MyVimrc BufWritePost *
-  \ call my#util#remove_file_if_empty(expand('%:p'))
+      \ call my#util#remove_file_if_empty(expand('%:p'))
 
 " dein {{{1
 if !isdirectory(s:dein_repo_dir)
