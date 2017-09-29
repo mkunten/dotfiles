@@ -256,9 +256,8 @@ endif
 " mkup
 " https://github.com/mattn/mkup 
 if executable('mkup')
+  command! -nargs=* Mkup call my#util#mkup(<f-args>)
   augroup MyVimrc
-    autocmd filetype markdown command! -buffer -nargs=? Mkup
-          \ call my#util#mkup(<f-args>)
     autocmd BufDelete *.md call my#util#mkup('stop')
     autocmd VimLeave * call my#util#mkup('stop')
   augroup END

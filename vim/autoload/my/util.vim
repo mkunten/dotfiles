@@ -86,33 +86,41 @@ endfunction
 
 " mkup
 if executable('mkup')
-  let g:mkup_is_running = 0
+  let g:mkup_port = 8000
+  let g:mkup_host = 'http://localhost'
+  function! my#util#mkup_start() abort
+    echomsg system("mkup --http ':"  . g:mkup_port . "' &")
+    echomsg 'mkup started'
+  endfunction
   function! my#util#mkup(...) abort
     let l:cmd = get(a:000, 0, '')
-    let l:port = get(a:000, 1, 8000)
-    let l:host = get(a:000, 2, 'http://localhost')
-    if cmd ==# 'start'
-      echomsg system("mkup --http ':"  . l:port . "' &")
-      echomsg 'mkup started'
-      let g:mkup_is_running = 1
-    elseif cmd ==# 'status'
-      echomsg printf('mukup is %srunning', g:mkup_is_running ? '' : 'not ')
-    elseif cmd ==# 'stop'
-      if !g:mkup_is_running
+    let l:filename = get(a:000, 1, expand('%'))
+    let l:mkup_is_running = system('pgrep -c mkup')
+    if l:cmd ==# 'start'
+      if !l:mkup_is_running
+        call my#util#mkup_start()
+      else
+        echomsg 'mkup is already running'
+      endif
+    elseif l:cmd ==# 'status'
+      echomsg printf('mukup is %srunning', l:mkup_is_running ? '' : 'not ')
+    elseif l:cmd ==# 'stop'
+      if l:mkup_is_running
         echomsg system('pkill mkup')
         echomsg 'mkup stopped'
-        let g:mkup_is_running = 0
+        let l:mkup_is_running = 0
+      else
+        echomsg 'mkup is not running'
       endif
-    elseif cmd ==# 'open'
-      if !g:mkup_is_running
-        echomsg system("mkup --http ':"  . l:port . "' &")
-        let g:mkup_is_running = 1
+    elseif l:cmd ==# 'open'
+      if !l:mkup_is_running
+        call my#util#mkup_start()
       endif
-      call openbrowser#open(printf('%s:%d/%s', l:host, l:port, expand('%')))
+      call openbrowser#open(printf('%s:%d/%s',
+            \ g:mkup_host, g:mkup_port, l:filename))
     else
-      echomsg "Usage: :Mkup (start [port] [host]|status|stop|open)\r\n"
-      echomsg "       port: default: 8000\r\n"
-      echomsg '       host: default: http://localhost'
+      echomsg "Usage: :Mkup (start|status|stop|open [filename])\r\n"
+      echomsg "       filename: filename to open (default: '%')"
     endif
   endfunction
 endif

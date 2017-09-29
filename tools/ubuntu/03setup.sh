@@ -9,7 +9,7 @@ sudo add-apt-repository -y ppa:masterminds/glide
 sudo apt -y update && sudo apt install -y \
   vim vim-gtk terminator git \
   eblook eb-utils eb-doc feh silversearcher-ag \
-  glide
+  glide plantuml
 
 ## dirs
 mkdir -p hostc tmp dev .ssh

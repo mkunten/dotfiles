@@ -344,11 +344,11 @@ repo = 'kana/vim-gf-user'
 
 [[plugins]]
 repo = 'kana/vim-gf-diff'
-depends = 'kana/vim-gf-user'
+depends = 'vim-gf-user'
 
 [[plugins]]
 repo = 'sgur/vim-gf-autoload'
-depends = 'kana/vim-gf-user'
+depends = 'vim-gf-user'
 
 # edit {{{1
 # undotree: \u
@@ -429,7 +429,7 @@ repo = 'kana/vim-operator-user'
 # replace: R(textobj)
 [[plugins]]
 repo = 'kana/vim-operator-replace'
-depends = ['kana/vim-operator-user']
+depends = ['vim-operator-user']
 hook_add = '''
   nmap <silent> R <Plug>(operator-replace)
 '''
@@ -437,7 +437,7 @@ hook_add = '''
 # surround: s[adr](textobj) *surround append/delete/replace
 [[plugins]]
 repo = 'rhysd/vim-operator-surround'
-depends = ['kana/vim-operator-user', 'thinca/vim-textobj-between']
+depends = ['vim-operator-user', 'vim-textobj-between']
 hook_add = '''
   nmap <silent> sa <Plug>(operator-surround-append)
   nmap <silent> sd <Plug>(operator-surround-delete)
@@ -449,7 +449,7 @@ hook_add = '''
 # html escape: sh[eu](textobj) *html escape/unescape
 [[plugins]]
 repo = 'tyru/operator-html-escape.vim'
-depends = ['kana/vim-operator-user']
+depends = ['vim-operator-user']
 hook_add = '''
   nmap <silent> she <Plug>(operator-html-escape)
   nmap <silent> shu <Plug>(operator-html-unescape)
@@ -458,7 +458,7 @@ hook_add = '''
 # snake_case <=> camelCase: s[cC~](textobj) *snake ... 
 [[plugins]]
 repo = 'tyru/operator-camelize.vim'
-depends = ['kana/vim-operator-user']
+depends = ['vim-operator-user']
 hook_add = '''
   nmap <silent> sc <Plug>(operator-camelize)
   nmap <silent> sC <Plug>(operator-decamelize)
@@ -468,7 +468,7 @@ hook_add = '''
 # flashy
 [[plugins]]
 repo = 'haya14busa/vim-operator-flashy'
-depends = ['kana/vim-operator-user']
+depends = ['vim-operator-user']
 hook_add = '''
   map y <Plug>(operator-flashy)
   nmap Y <plug>(operator-flashy)
@@ -480,63 +480,63 @@ repo = 'kana/vim-textobj-user'
 
 #[[plugins]]
 #repo = 'kana/vim-textobj-jabraces'
-#depends = ['kana/vim-textobj-user']
+#depends = ['vim-textobj-user']
 
 [[plugins]]
 repo = 'kana/vim-textobj-entire'# e
-depends = ['kana/vim-textobj-user']
+depends = ['vim-textobj-user']
 
 [[plugins]]
 repo = 'kana/vim-textobj-line'# l
-depends = ['kana/vim-textobj-user']
+depends = ['vim-textobj-user']
 
 [[plugins]]
 repo = 'kana/vim-textobj-indent'# i/I
-depends = ['kana/vim-textobj-user']
+depends = ['vim-textobj-user']
 
 [[plugins]]
 repo = 'kana/vim-textobj-fold'# z
-depends = ['kana/vim-textobj-user']
+depends = ['vim-textobj-user']
 
 [[plugins]]
 repo = 'kana/vim-textobj-syntax'# y
-depends = ['kana/vim-textobj-user']
+depends = ['vim-textobj-user']
 
 [[plugins]]
 repo = 'glts/vim-textobj-comment'# c
-depends = ['kana/vim-textobj-user']
+depends = ['vim-textobj-user']
 
 [[plugins]]
 repo = 'mattn/vim-textobj-url'# u
-depends = ['kana/vim-textobj-user']
+depends = ['vim-textobj-user']
 
 [[plugins]]
 repo = 'osyo-manga/vim-textobj-multiblock'# b
-depends = ['kana/vim-textobj-user']
+depends = ['vim-textobj-user']
 
 [[plugins]]
 repo = 'osyo-manga/vim-textobj-multitextobj'
-depends = ['kana/vim-textobj-user']
+depends = ['vim-textobj-user']
 
 [[plugins]]
 repo = 'kana/vim-textobj-function'# f/F
-depends = ['kana/vim-textobj-user']
+depends = ['vim-textobj-user']
 
 [[plugins]]
 repo = 'thinca/vim-textobj-function-javascript'
-depends = ['kana/vim-textobj-function']
+depends = ['vim-textobj-function']
 
 [[plugins]]
 repo = 'sgur/vim-textobj-parameter'# ,
-depends = ['kana/vim-textobj-user']
+depends = ['vim-textobj-user']
 
 [[plugins]]
 repo = 'Julian/vim-textobj-variable-segment'# v
-depends = ['kana/vim-textobj-user']
+depends = ['vim-textobj-user']
 
 [[plugins]]
 repo = 'thinca/vim-textobj-between'# f{char}
-depends = ['kana/vim-textobj-user']
+depends = ['vim-textobj-user']
 
 # filetypes {{{1
 # toml {{{2
@@ -566,9 +566,15 @@ repo = 'marijnh/tern_for_vim'
 build = 'npm install'
 on_ft = 'javascript'
 
+# golang {{{2
 [[plugins]]
 repo = 'fatih/vim-go'
 on_ft = 'go'
+
+# plantuml {{{2
+[[plugins]]
+repo = 'aklt/plantuml-syntax'
+on_ft = ['pu', 'uml', 'plantuml']
 
 # references {{{1
 # vim-ref
@@ -622,7 +628,7 @@ repo = 'osyo-manga/codic-vim'
 # browser {{{1
 [[plugins]]
 repo = 'osyo-manga/ref-lynx'
-depends = ['thinca/vim-ref']
+depends = ['vim-ref']
 
 [[plugins]]
 repo = 'tyru/open-browser.vim'
@@ -643,3 +649,12 @@ repo = 'deris/vim-duzzle'
 on_cmd = ['Duzzle']
 lazy = 1
 
+[[plugins]]
+repo = 'rbtnn/mario.vim'
+depends = ['game_engine']
+on_cmd = ['Mario']
+lazy = 1
+
+[[plugins]]
+repo = 'rbtnn/game_engine.vim'
+lazy = 1
