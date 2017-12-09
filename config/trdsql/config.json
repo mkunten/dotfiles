@@ -1,0 +1,13 @@
+{
+  "db": "sdb",
+  "database": {
+    "sdb": {
+      "driver": "sqlite3",
+      "dsn": ""
+    },
+    "pdb": {
+      "driver": "postgres",
+      "dsn": "user=trdsql password=trdsql dbname=trdsql"
+    }
+  }
+}

@@ -43,7 +43,8 @@ export GOPATH=~/dev
 export PATH=$PATH:$HOME/bin:$GOPATH/bin
 go get -u golang.org/x/tools/cmd/...
 go get -u github.com/BurntSushi/toml/cmd/tomlv
-go get -u github.com/dinedal/textql/...
+#go get -u github.com/dinedal/textql/...
+go get -u github.com/noborus/trdsql
 go get -u github.com/mattn/mkup
 go get -u github.com/motemen/ghq
 # peco
@@ -77,6 +78,8 @@ ln -s ~/dev/dev/src/github.com/mkunten/dotfiles/lesskey ~/.lesskey
 mkdir -p ~/.config/terminator
 cp ~/dev/dev/src/github.com/mkunten/dotfiles/config/terminator/config \
   ~/.config/terminator/config
+cp ~/dev/dev/src/github.com/mkunten/dotfiles/config/trdsql \
+  ~/.config/trdsql
 
 # .profile
 cat << 'EOS' >> ~/.profile
@@ -138,6 +141,11 @@ sudo -u postgres -s createuser -sdrlP $(id -un)
 # reload
 sudo systemctl restart postgresql
 sudo systemctl restart apache2
+# trdsql
+echo "postgresql: create(user|db) for noborus/trdsql"
+createuser trdsql
+createdb -O trdsql trdsql
+psql trdsql -c "ALTER USER trdsql WITH PASSWORD 'trdsql'"
 
 # nodejs tools
 npm install -g eslint coffee-script js2coffee uglify-js pm2
