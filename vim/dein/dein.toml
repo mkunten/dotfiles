@@ -13,9 +13,10 @@ depends = ['Shougo/dein.vim']
 repo = 'vim-jp/vimdoc-ja'
 
 # vimproc
-# [[plugins]]
-# repo = 'Shougo/vimproc.vim'
-# build = 'make'
+[[plugins]]
+repo = 'Shougo/vimproc.vim'
+build = 'make'
+lazy = 1
 
 # vimshell
 [[plugins]]
@@ -413,6 +414,7 @@ lazy = 1
 repo = 'haya14busa/vim-metarepeat'
 
 # template
+[[plugins]]
 repo = 'mattn/sonictemplate-vim'
 on_cmd = ['Template']
 on_map = [ '<C-y>' ]
@@ -565,6 +567,16 @@ hook_add = '''
 repo = 'marijnh/tern_for_vim'
 build = 'npm install'
 on_ft = 'javascript'
+
+# TypeScript {{{22
+[[plugins]]
+repo = 'leafgarland/typescript-vim'
+on_ft = 'typescript'
+
+[[plugins]]
+repo = 'Quramy/tsuquyomi'
+on_ft = 'typescript'
+depends = ['vimproc']
 
 # golang {{{2
 [[plugins]]

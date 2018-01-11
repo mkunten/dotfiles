@@ -72,9 +72,11 @@ set keywordprg=:help
 let &undodir = s:undofile_dir
 set undofile
 " motion {{{3
-set whichwrap& whichwrap+=< whichwrap+=> whichwrap+=[ whichwrap+=]
-set backspace& backspace+=indent backspace+=eol backspace+=start
+set whichwrap& whichwrap+=<,>,[,]
+set backspace& backspace+=indent,eol,start
 set nostartofline
+set matchpairs& matchpairs+=「:」,『:』,（:）,｛:｝,［:］,〔:〕,【:】
+set matchpairs+=〈:〉,《:》,‹:›,«:»,‘:’,“:”
 " search {{{3
 set incsearch
 set hlsearch
@@ -204,7 +206,7 @@ if has('xim') || has('multi_byte_ime') || has('global-ime')
   set iminsert=2
   set imsearch=-1
   if executable('fcitx-remote')
-    autocmd MyVimrc InsertLeave * call system('fcitx-remote -c')
+    autocmd MyVimrc InsertLeave,CmdlineLeave * call system('fcitx-remote -c')
   endif
 endif
 " toggle keymapping for input method
