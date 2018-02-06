@@ -55,8 +55,8 @@ hook_add = '''
 '''
 
 [[plugins]]
-repo = 'lambdalisue/vim-gita'
-# on_cmd = ['Gita']
+repo = 'lambdalisue/gina.vim'
+# on_cmd = ['Gina']
 # lazy = 1
 
 # ag
@@ -65,6 +65,7 @@ repo = 'rking/ag.vim'
 on_cmd = ['Ag']
 lazy = 1
 
+# QuickRun
 [[plugins]]
 repo = 'thinca/vim-quickrun'
 # on_cmd = 'QuickRun'
@@ -235,7 +236,7 @@ repo = 'ryanoasis/vim-webdevicons'
 # lightline
 [[plugins]]
 repo = 'itchyny/lightline.vim'
-depends = ['gita', 'webdevicons', 'anzu']
+depends = ['gina', 'webdevicons', 'anzu']
 hook_add = '''
   autocmd MyVimrc FileType vim,toml
     \ command! -buffer -bar LightlineUpdate
@@ -243,13 +244,13 @@ hook_add = '''
   let g:lightline = {
     \ 'active': {
     \   'left': [['mode', 'paste'],
-    \     ['LLgita', 'LLfilename', 'LLstatus', 'LLanzu']],
+    \     ['LLgina', 'LLfilename', 'LLstatus', 'LLanzu']],
     \   'right': [['LLlinecolnum'], ['LLcharinfo'],
     \     ['LLfiletype', 'LLfileinfo']]
     \ },
     \ 'inactive': {
     \   'left': [['mode', 'paste'],
-    \     ['LLgita', 'LLfilename', 'LLstatus', 'LLanzu']],
+    \     ['LLgina', 'LLfilename', 'LLstatus', 'LLanzu']],
     \   'right': [['LLlinecolnum'], ['LLcharinfo'],
     \     ['LLfiletype', 'LLfileinfo']]
     \ },
@@ -270,7 +271,7 @@ hook_add = '''
     \   'LLcwd': '%#comment#%{getcwd() . "/"}%*'
     \ },
     \ 'component_function': {
-    \   'LLgita': 'my#lightline#gita_status',
+    \   'LLgina': 'my#lightline#gina_status',
     \   'LLfilename': 'my#lightline#filename',
     \   'LLanzu': 'anzu#search_status'
     \ },
@@ -345,11 +346,11 @@ repo = 'kana/vim-gf-user'
 
 [[plugins]]
 repo = 'kana/vim-gf-diff'
-depends = 'vim-gf-user'
+depends = 'gf-user'
 
 [[plugins]]
 repo = 'sgur/vim-gf-autoload'
-depends = 'vim-gf-user'
+depends = 'gf-user'
 
 # edit {{{1
 # undotree: \u
@@ -431,7 +432,7 @@ repo = 'kana/vim-operator-user'
 # replace: R(textobj)
 [[plugins]]
 repo = 'kana/vim-operator-replace'
-depends = ['vim-operator-user']
+depends = ['operator-user']
 hook_add = '''
   nmap <silent> R <Plug>(operator-replace)
 '''
@@ -439,7 +440,7 @@ hook_add = '''
 # surround: s[adr](textobj) *surround append/delete/replace
 [[plugins]]
 repo = 'rhysd/vim-operator-surround'
-depends = ['vim-operator-user', 'vim-textobj-between']
+depends = ['operator-user', 'textobj-between']
 hook_add = '''
   nmap <silent> sa <Plug>(operator-surround-append)
   nmap <silent> sd <Plug>(operator-surround-delete)
@@ -451,7 +452,7 @@ hook_add = '''
 # html escape: sh[eu](textobj) *html escape/unescape
 [[plugins]]
 repo = 'tyru/operator-html-escape.vim'
-depends = ['vim-operator-user']
+depends = ['operator-user']
 hook_add = '''
   nmap <silent> she <Plug>(operator-html-escape)
   nmap <silent> shu <Plug>(operator-html-unescape)
@@ -460,7 +461,7 @@ hook_add = '''
 # snake_case <=> camelCase: s[cC~](textobj) *snake ... 
 [[plugins]]
 repo = 'tyru/operator-camelize.vim'
-depends = ['vim-operator-user']
+depends = ['operator-user']
 hook_add = '''
   nmap <silent> sc <Plug>(operator-camelize)
   nmap <silent> sC <Plug>(operator-decamelize)
@@ -470,10 +471,10 @@ hook_add = '''
 # flashy
 [[plugins]]
 repo = 'haya14busa/vim-operator-flashy'
-depends = ['vim-operator-user']
+depends = ['operator-user']
 hook_add = '''
   map y <Plug>(operator-flashy)
-  nmap Y <plug>(operator-flashy)
+  nmap Y <Plug>(operator-flashy)$
 '''
 
 # text object {{{2
@@ -482,63 +483,63 @@ repo = 'kana/vim-textobj-user'
 
 #[[plugins]]
 #repo = 'kana/vim-textobj-jabraces'
-#depends = ['vim-textobj-user']
+#depends = ['textobj-user']
 
 [[plugins]]
 repo = 'kana/vim-textobj-entire'# e
-depends = ['vim-textobj-user']
+depends = ['textobj-user']
 
 [[plugins]]
 repo = 'kana/vim-textobj-line'# l
-depends = ['vim-textobj-user']
+depends = ['textobj-user']
 
 [[plugins]]
 repo = 'kana/vim-textobj-indent'# i/I
-depends = ['vim-textobj-user']
+depends = ['textobj-user']
 
 [[plugins]]
 repo = 'kana/vim-textobj-fold'# z
-depends = ['vim-textobj-user']
+depends = ['textobj-user']
 
 [[plugins]]
 repo = 'kana/vim-textobj-syntax'# y
-depends = ['vim-textobj-user']
+depends = ['textobj-user']
 
 [[plugins]]
 repo = 'glts/vim-textobj-comment'# c
-depends = ['vim-textobj-user']
+depends = ['textobj-user']
 
 [[plugins]]
 repo = 'mattn/vim-textobj-url'# u
-depends = ['vim-textobj-user']
+depends = ['textobj-user']
 
 [[plugins]]
 repo = 'osyo-manga/vim-textobj-multiblock'# b
-depends = ['vim-textobj-user']
+depends = ['textobj-user']
 
 [[plugins]]
 repo = 'osyo-manga/vim-textobj-multitextobj'
-depends = ['vim-textobj-user']
+depends = ['textobj-user']
 
 [[plugins]]
 repo = 'kana/vim-textobj-function'# f/F
-depends = ['vim-textobj-user']
+depends = ['textobj-user']
 
 [[plugins]]
 repo = 'thinca/vim-textobj-function-javascript'
-depends = ['vim-textobj-function']
+depends = ['textobj-function']
 
 [[plugins]]
 repo = 'sgur/vim-textobj-parameter'# ,
-depends = ['vim-textobj-user']
+depends = ['textobj-user']
 
 [[plugins]]
 repo = 'Julian/vim-textobj-variable-segment'# v
-depends = ['vim-textobj-user']
+depends = ['textobj-user']
 
 [[plugins]]
 repo = 'thinca/vim-textobj-between'# f{char}
-depends = ['vim-textobj-user']
+depends = ['textobj-user']
 
 # filetypes {{{1
 # toml {{{2
@@ -561,6 +562,14 @@ repo = 'othree/javascript-libraries-syntax.vim'
 on_ft = 'javascript'
 hook_add = '''
   let g:used_javascript_libs='jquery'
+'''
+
+[[plugins]]
+repo = 'posva/vim-vue'
+on_ft = 'vue'
+hook_add = '''
+ autocmd MyVimrc BufRead,BufNewFile *.vue
+   \ setlocal filetype=vue.html.javascript.css
 '''
 
 [[plugins]]

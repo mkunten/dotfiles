@@ -30,8 +30,8 @@ let s:swapfile_dir = s:tmp_dir . '/swapfiles'
 let s:dein_dir = expand('$VIMHOME/dein')
 let s:dein_toml = s:dein_dir . '/dein.toml'
 let s:dein_repo = 'github.com/Shougo/dein.vim'
-let s:dein_repo_dir = s:dein_dir . '/repos/' . s:dein_repo
 let s:dein_local_repo_dir = expand('$VIMHOME/dein.local')
+let s:dein_repo_dir = s:dein_dir . '/repos/' . s:dein_repo
 
 " Prepare directories {{{1
 silent call my#util#mkdir_if_not_exist(s:undofile_dir, 1)
@@ -112,10 +112,13 @@ let &directory = s:swapfile_dir
 " view {{{2
 " redraw {{{3
 nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
+" highlight the previously changed or yanked text
+nnoremap <expr> g<C-l> '`[' . strpart(getregtype(), 0, 1) . '`]'
+
 
 " edit {{{2
 " Map Y to act like D and C
-nnoremap Y y$
+"nnoremap Y y$
 " into the black hole
 nnoremap c "_c
 nnoremap C "_C
@@ -141,7 +144,7 @@ cnoremap <C-e> <End>
 cnoremap <C-f> <Right>
 cnoremap <M-b> <S-Left>
 cnoremap <M-f> <S-Right>
-"
+" in place of <C-d>
 cnoremap <C-x> <Del>
 " swap completion behaviors
 cnoremap <C-n> <Down>
