@@ -115,10 +115,9 @@ nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 " highlight the previously changed or yanked text
 nnoremap <expr> g<C-l> '`[' . strpart(getregtype(), 0, 1) . '`]'
 
-
 " edit {{{2
 " Map Y to act like D and C
-"nnoremap Y y$
+nnoremap Y y$
 " into the black hole
 nnoremap c "_c
 nnoremap C "_C
@@ -205,13 +204,16 @@ autocmd MyVimrc InsertLeave *
 " command! Swapfiles echo vimproc#system('vim -r')
 command! Swapfiles QuickRun swapfiles
 
-if has('xim') || has('multi_byte_ime') || has('global-ime')
-  set iminsert=2
-  set imsearch=-1
-  if executable('fcitx-remote')
-    autocmd MyVimrc InsertLeave,CmdlineLeave * call system('fcitx-remote -c')
-  endif
-endif
+" imput method
+" if has('multi_byte_ime') || has('xim') || has('global-ime')
+"   set iminsert=2
+"   set imsearch=-1
+"   " " conflict with vim-operator-user
+"   " if executable('fcitx-remote')
+"   "   autocmd MyVimrc InsertLeave,CmdlineLeave * call system('fcitx-remote -c')
+"   " endif
+" endif
+
 " toggle keymapping for input method
 function! s:toggle_keymap_mk() abort
   let &keymap = empty(&keymap) ? 'mk' : ''
