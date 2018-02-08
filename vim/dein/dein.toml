@@ -619,12 +619,15 @@ hook_add = '''
 
   " settings
   command! -nargs=1 DictTibDetail
-    \ :Ref<Space>webdict<Space>tib<Space><f-args>
+    \ :Ref webdict tib <f-args>
   command! -nargs=1 DictTibSearch
-    \ :Ref<Space>webdict<Space>tibs<Space><f-args>
+    \ :Ref webdict tibs <f-args>
   let g:ref_source_webdict_sites = {
-    \   'alc': {
-    \     'url': 'http://eow.alc.co.jp/%s/UTF-8/'
+  "  \   'alc': {
+  "  \     'url': 'https://eow.alc.co.jp/search?q=%s'
+  "  \   },
+    \   'glyphwiki': {
+    \     'url': 'http://glyphwiki.org/wiki/%s'
     \   },
     \   'tib': {
     \     'url': 'http://ircdict.aa-ken.jp/starvdic/entries/%s.html'
@@ -633,8 +636,11 @@ hook_add = '''
     \     'url': 'http://ircdict.aa-ken.jp/starvdic/search.html?q=%s'
     \   }
     \ }
-  function! g:ref_source_webdict_sites.alc.filter(output)
-    return join(split(a:output, "\n")[42:], "\n")
+  "function! g:ref_source_webdict_sites.alc.filter(output)
+  "  return join(split(a:output, "\n")[42:], "\n")
+  "endfunction
+  function! g:ref_source_webdict_sites.glyphwiki.filter(output)
+    return join(split(a:output, "\n")[35:], "\n")
   endfunction
 '''
 
@@ -657,11 +663,19 @@ on_func = ['openbrowser#open']
 on_cmd = ['OpenBrowser', 'OpenBrowserSearch', 'OpenBrowserSmartSearch']
 lazy = 1
 hook_add = '''
-  let g:openbrowser_browser_commands = [{
-    \   'background': 1,
-    \   'name': 'lemo',
-    \   'args': ['{browser}', '{uri}']
-    \ }]
+  if executable('lemo')
+    let g:openbrowser_browser_commands = [{
+      \   'background': 1,
+      \   'name': 'lemo',
+      \   'args': ['{browser}', '{uri}']
+      \ }]
+  endif
+  let g:openbrowser_search_engines = {
+  \   'glyphwiki': 'http://glyphwiki.org/wiki/{query}',
+  \   'gw-unicode': 'http://glyphwiki.org/wiki/u{query}',
+  \   'gw-dkw': 'http://glyphwiki.org/wiki/dkw-{query}',
+  \   'chise': 'http://www.chise.org/ids-find?components={query}'
+  \ }
 '''
 
 # others
