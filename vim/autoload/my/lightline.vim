@@ -1,7 +1,12 @@
 " lightline
 
-function! my#lightline#gita_status() abort
-  return gita#statusline#format('%{#}lb %{+}na%{-}nd%{"}nr%{*}nm%{@}nu')
+" function! my#lightline#gita_status() abort
+"   return gita#statusline#format('%{#}lb %{+}na%{-}nd%{"}nr%{*}nm%{@}nu')
+" endfunction
+"
+function! my#lightline#gina_status() abort
+  return printf('%s %s', gina#component#repo#branch(),
+        \ gina#component#status#preset())
 endfunction
 
 function! my#lightline#filename() abort
