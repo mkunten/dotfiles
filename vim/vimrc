@@ -151,13 +151,10 @@ cnoremap <C-p> <Up>
 cnoremap <Down> <C-n>
 cnoremap <Up> <C-p>
 
-" keep curor pos when exiting from insert mode
-"inoremap <silent> <Esc> <Esc>`^
-inoremap <silent> <Esc> <Esc>:keepjumps normal! `^<CR>
-
-" workaround for cursor keys in insert mode
-inoremap <Esc>OB <Down>
-inoremap <Esc>OA <Up>
+" " keep curor pos when exiting from insert mode
+" "inoremap <silent> <Esc> <Esc>`^
+" inoremap <silent> <Esc> <Esc>:keepjumps normal! `^<CR>
+autocmd MyVimrc InsertLeave * keepjumps normal! `^<CR>
 
 " ColorScheme {{{1
 "set term=xterm-256color
