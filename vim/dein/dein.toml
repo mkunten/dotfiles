@@ -597,6 +597,10 @@ on_ft = 'go'
 repo = 'aklt/plantuml-syntax'
 on_ft = ['pu', 'uml', 'plantuml']
 
+[[plugins]]
+repo = 'scrooloose/vim-slumlord'
+on_ft = ['pu', 'uml', 'plantuml']
+
 # references {{{1
 # vim-ref
 [[plugins]]
@@ -604,7 +608,7 @@ repo = 'thinca/vim-ref'
 on_cmd = 'Ref'
 hook_add = '''
   " preparation
-  let g:ref_rootdir = expand('$VIMHOME/ref/')
+  let g:ref_rootdir = $VIMHOME . '/ref/'
   call my#util#mkdir_if_not_exist(g:ref_rootdir, 1)
   " php
   let g:ref_phpmanual_path = g:ref_rootdir . 'php-chunked-xhtml'
@@ -676,6 +680,17 @@ hook_add = '''
   \   'gw-dkw': 'http://glyphwiki.org/wiki/dkw-{query}',
   \   'chise': 'http://www.chise.org/ids-find?components={query}'
   \ }
+'''
+
+[[plugins]]
+repo = 'kannokanno/previm'
+on_ft = ['markdown']
+lazy = 1
+depends = ['open-browser']
+hook_add = '''
+  let g:previm_open_cmd = 'firefox'
+  let g:previm_disable_default_css = 1
+  let g:previm_custom_css_path = $VIMHOME . '/css/markdown.css'
 '''
 
 # others
