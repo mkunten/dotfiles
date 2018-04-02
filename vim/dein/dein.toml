@@ -148,6 +148,9 @@ hook_add = '''
   command! -nargs=? -range JqQuickfix
     \ :<line1>,<line2>call s:jq('multi:buffer:quickfix', <f-args>)
 
+  " show swapfiles
+  command! Swapfiles QuickRun swapfiles
+
   nnoremap <expr><silent> <C-c> quickrun#is_running()
     \ ? quickrun#sweep_sessions() : '\<C-c>'
   nnoremap <silent> <Leader>c :<C-u>QuickRunClose<CR>

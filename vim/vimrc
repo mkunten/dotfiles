@@ -110,7 +110,7 @@ let &directory = s:swapfile_dir
 
 " Key Mappings {{{1
 " view {{{2
-" redraw {{{3
+" redraw
 nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 " highlight the previously changed or yanked text
 nnoremap <expr> g<C-l> '`[' . strpart(getregtype(), 0, 1) . '`]'
@@ -152,7 +152,6 @@ cnoremap <Down> <C-n>
 cnoremap <Up> <C-p>
 
 " " keep curor pos when exiting from insert mode
-" "inoremap <silent> <Esc> <Esc>`^
 " inoremap <silent> <Esc> <Esc>:keepjumps normal! `^<CR>
 autocmd MyVimrc InsertLeave * keepjumps normal! `^<CR>
 
@@ -196,10 +195,6 @@ autocmd MyVimrc QuickFixCmdPost *grep* cwindow
 " diff update
 autocmd MyVimrc InsertLeave *
       \ if &diff | diffupdate | echo 'diffupdated' | endif
-
-" show swapfiles
-" command! Swapfiles echo vimproc#system('vim -r')
-command! Swapfiles QuickRun swapfiles
 
 " imput method
 " if has('multi_byte_ime') || has('xim') || has('global-ime')
