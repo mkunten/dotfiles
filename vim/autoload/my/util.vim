@@ -86,8 +86,8 @@ endfunction
 
 " mkup
 if executable('mkup')
-  let g:mkup_port = 8000
-  let g:mkup_host = 'http://localhost'
+  let g:mkup_port = get(g:, 'mkup_port', 8000)
+  let g:mkup_host = get(g:, 'mkup_host', 'http://localhost')
   function! my#util#mkup_start() abort
     echomsg system("mkup --http ':"  . g:mkup_port . "' &")
     echomsg 'mkup started'
