@@ -194,11 +194,18 @@ hook_add = '''
     \   'command': 'tomlv',
     \   'exec': '%c %o %s:p '
     \ },
+    \ 'watchdogs_checker/xmllint': {
+    \   'command': 'xmllint',
+    \   'exec': '%c %o %s:p'
+    \ },
     \ 'vim/watchdogs_checker': {
     \   'type': executable('vint') ? 'watchdogs_checker/vint' : ''
     \ },
     \ 'toml/watchdogs_checker': {
     \   'type': executable('tomlv') ? 'watchdogs_checker/toml' : ''
+    \ },
+    \ 'xml/watchdogs_checker': {
+    \   'type': executable('xmllint') ? 'watchdogs_checker/xmllint' : ''
     \ },
     \ 'javascript/watchdogs_checker': {
     \   'type': executable('eslint') ? 'watchdogs_checker/eslint' : ''
@@ -290,8 +297,8 @@ repo = 'thinca/vim-zenspace'
 repo = 'nathanaelkane/vim-indent-guides'
 
 # show matching parens
-[[plugins]]
-repo = 'vim-scripts/matchparenpp'
+# [[plugins]]
+# repo = 'vim-scripts/matchparenpp'
 
 # fold
 [[plugins]]
@@ -600,6 +607,10 @@ on_ft = ['pu', 'uml', 'plantuml']
 [[plugins]]
 repo = 'scrooloose/vim-slumlord'
 on_ft = ['pu', 'uml', 'plantuml']
+hook_add = '''
+  let g:slumlord_plantuml_jar_path = '/usr/lib/jvm/java-1.8.0-openjdk-amd64/bin/java -utxt'
+
+'''
 
 # references {{{1
 # vim-ref
@@ -609,7 +620,7 @@ on_cmd = 'Ref'
 hook_add = '''
   " preparation
   let g:ref_rootdir = $VIMHOME . '/ref/'
-  call my#util#mkdir_if_not_exist(g:ref_rootdir, 1)
+  call mkdir(g:ref_rootdir, 'p')
   " php
   let g:ref_phpmanual_path = g:ref_rootdir . 'php-chunked-xhtml'
   if !isdirectory(g:ref_phpmanual_path) &&

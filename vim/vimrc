@@ -1,6 +1,8 @@
 " Startup {{{1
 if 0 | endif
 
+" set nocompatible
+
 augroup MyVimrc
   autocmd!
 augroup END
@@ -34,8 +36,8 @@ let s:dein_local_repo_dir = expand('$VIMHOME/dein.local')
 let s:dein_repo_dir = s:dein_dir . '/repos/' . s:dein_repo
 
 " Prepare directories {{{1
-silent call my#util#mkdir_if_not_exist(s:undofile_dir, 1)
-silent call my#util#mkdir_if_not_exist(s:swapfile_dir, 1)
+call mkdir(s:undofile_dir, 'p')
+call mkdir(s:swapfile_dir, 'p')
 
 " Options {{{1
 " encoding {{{2
