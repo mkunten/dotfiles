@@ -109,6 +109,7 @@ set modeline
 set hidden
 set confirm
 let &directory = s:swapfile_dir
+set viminfofile=$VIMHOME/.viminfo
 
 " Key Mappings {{{1
 " view {{{2
