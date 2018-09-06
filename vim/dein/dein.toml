@@ -356,11 +356,11 @@ repo = 'kana/vim-gf-user'
 
 [[plugins]]
 repo = 'kana/vim-gf-diff'
-depends = 'gf-user'
+depends = ['gf-user']
 
 [[plugins]]
 repo = 'sgur/vim-gf-autoload'
-depends = 'gf-user'
+depends = ['gf-user']
 
 # edit {{{1
 # undotree: \u
