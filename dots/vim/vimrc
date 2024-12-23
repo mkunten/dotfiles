@@ -1,0 +1,250 @@
+" Startup {{{1
+if 0 | endif
+
+" set nocompatible
+
+augroup MyVimrc
+  autocmd!
+augroup END
+
+" Echo startup time on start
+if has('vim_starting') && has('reltime')
+  " Shell: vim --startuptime filename -q; vim filename
+  " vim --cmd 'profile start profile.txt' --cmd 'profile file $HOME/.vimrc' +q && vim profile.txt
+  let s:startuptime = reltime()
+  autocmd MyVimrc VimEnter * let s:startuptime = reltime(s:startuptime) | redraw
+  \ | echomsg 'startuptime: ' . reltimestr(s:startuptime)
+endif
+
+if has('vim_starting')
+  set runtimepath&
+endif
+
+" environment varialbles {{{1
+let $MYVIMRC = resolve($MYVIMRC)
+
+" script variables {{{1
+let $VIMHOME = expand('$HOME/.vim')
+let $VIMTMPDIR = expand('$VIMHOME/tmp')
+let s:undofile_dir = $VIMTMPDIR . '/undofiles'
+let s:swapfile_dir = $VIMTMPDIR . '/swapfiles'
+
+" Prepare directories {{{1
+call mkdir(s:undofile_dir, 'p')
+call mkdir(s:swapfile_dir, 'p')
+
+" Options {{{1
+" encoding {{{2
+set encoding=utf-8
+set fileencoding=utf-8
+set fileencodings=ucs-bom,utf-8,iso-2022-jp-3,euc-jp,cp932,latin1
+set fileformats=unix,dos,mac
+scriptencoding utf-8
+
+" view {{{2
+" display {{{3
+set list
+set listchars=eol:$,tab:>\ ,trail:_,nbsp:%
+set ambiwidth=double
+set showmatch matchtime=1 matchpairs& matchpairs+=<:>
+set showcmd
+set notimeout ttimeout ttimeoutlen=200
+set number
+set display& display+=lastline
+set scrolloff=2
+set laststatus=2
+set cmdheight=2
+set showtabline=2
+set belloff=all
+" split {{{3
+set splitbelow splitright
+set diffopt& diffopt+=vertical
+" help {{{3
+set helpheight=12
+set helplang=en
+set keywordprg=:help
+" edit {{{2
+" undo {{{3
+let &undodir = s:undofile_dir
+set undofile
+" motion {{{3
+set whichwrap& whichwrap+=<,>,[,]
+set backspace& backspace+=indent,eol,start
+set nostartofline
+set matchpairs& matchpairs+=「:」,『:』,（:）,｛:｝,［:］,〔:〕,【:】
+set matchpairs+=〈:〉,《:》,‹:›,«:»,‘:’,“:”
+" search {{{3
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+set wrapscan
+" completion {{{3
+set pumheight=10
+set wildmenu wildmode=longest:full,full
+set infercase
+" clipboard {{{3
+" default: clipboard=autoselect,exclude:cons\|linux
+set clipboard=autoselectplus,exclude:cons\|linux
+" indent {{{3
+set autoindent
+set smartindent
+set shiftwidth=2 "0
+set softtabstop=-1
+set tabstop=2
+set expandtab
+set shiftround
+" others {{{3
+set formatoptions& formatoptions+=j
+set mouse=a
+set nrformats& nrformats-=octal
+set virtualedit=block
+set modeline
+set hidden
+set confirm
+let &directory = s:swapfile_dir
+set viminfofile=$VIMTMPDIR/.viminfo
+
+" Key Mappings {{{1
+" view {{{2
+" redraw
+nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
+" highlight the previously changed or yanked text
+nnoremap <expr> g<C-l> '`[' . strpart(getregtype(), 0, 1) . '`]'
+
+" edit {{{2
+" Map Y to act like D and C
+nnoremap Y y$
+" into the black hole
+nnoremap c "_c
+nnoremap C "_C
+
+" keymapping for h/l instead of whichwrap in normal mode
+nnoremap h <Left>zv
+nnoremap l <Right>zv
+" keymapping to swap physical/logical line movements
+nnoremap j gj
+nnoremap gj j
+nnoremap k gk
+nnoremap gk k
+vnoremap j gj
+vnoremap gj j
+vnoremap k gk
+vnoremap gk k
+
+" Emacs-like keymapping in commandline mode
+cnoremap <C-a> <Home>
+cnoremap <C-b> <Left>
+" cnoremap <C-d> <Del>
+cnoremap <C-e> <End>
+cnoremap <C-f> <Right>
+cnoremap <M-b> <S-Left>
+cnoremap <M-f> <S-Right>
+" in place of <C-d>
+cnoremap <C-x> <Del>
+" swap completion behaviors
+cnoremap <C-n> <Down>
+cnoremap <C-p> <Up>
+cnoremap <Down> <C-n>
+cnoremap <Up> <C-p>
+
+" " keep curor pos when exiting from insert mode
+" inoremap <silent> <Esc> <Esc>:keepjumps normal! `^<CR>
+autocmd MyVimrc InsertLeave * keepjumps normal! `^<CR>
+
+" ColorScheme {{{1
+"set term=xterm-256color
+"set t_Co=256
+function! s:setColors()
+  highlight LineNr cterm=NONE ctermfg=6 guifg=darkcyan
+  highlight NonText cterm=NONE ctermfg=238 guifg=Blue
+  highlight SpecialKey cterm=NONE ctermfg=238 guifg=Blue
+  highlight IncSearch ctermfg=15 ctermbg=4
+  highlight Search ctermfg=15 ctermbg=4
+  highlight SpellCap ctermfg=15 ctermbg=4
+  highlight SpellBad cterm=underline ctermbg=233
+  highlight DiffAdd cterm=bold ctermbg=21
+  highlight DiffDelete cterm=bold ctermbg=0
+  highlight DiffChange cterm=bold ctermbg=127
+  highlight DiffText cterm=bold ctermfg=15 ctermbg=0
+endfunction
+autocmd MyVimrc ColorScheme * call s:setColors()
+colorscheme desert
+
+" Other variables/commands/functions {{{1
+let g:netrw_home = $VIMTMPDIR
+let g:tex_flavor = 'latex'
+
+" check timestamp
+autocmd MyVimrc WinEnter,FocusGained * checktime
+
+" show cursorline automatically
+autocmd MyVimrc CursorMoved,CursorMovedI *
+  \ call my#util#auto_cursorline('CursorMoved')
+autocmd MyVimrc CursorHold,CursorHoldI *
+  \ call my#util#auto_cursorline('CursorHold')
+autocmd MyVimrc WinEnter * call my#util#auto_cursorline('WinEnter')
+autocmd MyVimrc WinLeave * call my#util#auto_cursorline('WinLeave')
+
+" QuickFix for vimgrep, grep, Ggrep
+autocmd MyVimrc QuickFixCmdPost *grep* cwindow
+
+" diff update
+autocmd MyVimrc InsertLeave *
+  \ if &diff | diffupdate | echo 'diffupdated' | endif
+
+" imput method
+" if has('multi_byte_ime') || has('xim') || has('global-ime')
+"   set iminsert=2
+"   set imsearch=-1
+"   " " conflict with vim-operator-user
+"   " if executable('fcitx-remote')
+"   "   autocmd MyVimrc InsertLeave,CmdlineLeave * call system('fcitx-remote -c')
+"   " endif
+" endif
+
+" toggle keymapping for input method
+function! s:toggle_keymap_mk() abort
+  let &keymap = empty(&keymap) ? 'mk' : ''
+endfunction
+inoremap <silent> <C-u> <C-o>:call <SID>toggle_keymap_mk()<CR>
+
+" some commands for editing vim settings
+command! Evimrc edit $MYVIMRC
+command! Spvimrc sp $MYVIMRC
+nnoremap <silent> <F5> :<C-u>source $MYVIMRC<CR>
+  \ :echomsg '$MYVIMRC reloaded.'<CR>
+
+" show hilighting group under the cursor
+command! SyntaxInfo call my#util#get_syn_info()
+command! ShowColorTest source $VIMRUNTIME/syntax/colortest.vim
+command! ShowHighlightTest source $VIMRUNTIME/syntax/hitest.vim
+
+" make directory automatically
+autocmd MyVimrc BufWritePre *
+ \ call my#util#mkdir_if_not_exist(expand('<afile>:p:h'), v:cmdbang)
+
+" remove empty file
+autocmd MyVimrc BufWritePost *
+ \ call my#util#remove_file_if_empty(expand('%:p'))
+
+" plugins {{{1
+" install jetpack {{{2
+let s:jetpackfile = expand('<sfile>:p:h') ..
+ \ '/pack/jetpack/opt/vim-jetpack/plugin/jetpack.vim'
+let s:jetpackurl = "https://raw.githubusercontent.com/tani/vim-jetpack/master/plugin/jetpack.vim"
+if !filereadable(s:jetpackfile)
+  call system(printf('curl -fsSLo %s --create-dirs %s', s:jetpackfile, s:jetpackurl))
+endif
+packadd vim-jetpack
+
+" setup {{{2
+runtime! _config/jetpack.vim
+runtime! _config/jetpack/*
+
+" {{{1
+filetype plugin indent on
+syntax enable
+
+" #modeline {{{1
+" vim: fdm=marker fdl=4 fdc=3 et ts=2 sts=2

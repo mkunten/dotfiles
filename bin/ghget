@@ -1,0 +1,25 @@
+#!/bin/bash
+set -eu
+
+if [ $# != 1 ]; then
+  echo << 'EOS'
+clone github repositories to a path under the ghq.root directory
+USAGE:
+  ghget {owner}/{repo}
+  ghget {repo} " my repos
+EOS
+  exit 1
+fi
+
+repo="${1}"
+OWNER="mkunten"
+GHQ_ROOT=$(git config --global ghq.root)
+
+if [[ ! "$repo" =~ '/' ]]; then
+  repo_path="$GHQ_ROOT/github.com/$OWNER/$repo"
+else
+  repo_path="$GHQ_ROOT/github.com/$repo"
+fi
+
+echo "gh repo clone $repo $repo_path"
+gh repo clone $repo $repo_path
