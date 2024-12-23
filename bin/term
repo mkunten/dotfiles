@@ -1,6 +1,0 @@
-#!/bin/bash
-if [ $(($(ps -ef | grep -c '/usr/bin/[t]erminator') & 1)) == 0 ]; then
-  VTE_CJK_WIDTH=1 /usr/bin/terminator -b -lmkdefault
-else
-  VTE_CJK_WIDTH=1 /usr/bin/terminator -b -lmksub
-fi

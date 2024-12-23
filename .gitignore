@@ -1,5 +1,1 @@
-tmp
-vim/dein/*
-vim/dein.local/*
-vim/ref/*
-!vim/dein/dein.toml
+tmp*

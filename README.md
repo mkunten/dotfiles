@@ -2,11 +2,9 @@
 
 seiri shitara ageyou to omoinagara itsumademo agerarenainode age...
 
-## files
+## usage
 
-- `README`: this file
-
-- `tools`: some tools for my initial setup
-
-- `others`: dotfiles  
-  e.g. gitignore => ~/.gitignore, vim => ~/.vim
+```bash
+curl -fLO https://raw.githubusercontent.com/mkunten/dotfiles/refs/heads/main/wsl_init.sh
+bash wsl_init.sh
+```
