@@ -3,7 +3,7 @@ set -eu
 
 #
 echo "# prepare dirs"
-mkdir -p ~/bin ~/dev/src
+mkdir -p ~/.local/bin ~/.config/bash/conf.d ~/dev/src
 ln -s /mnt/c/Documents ~/
 ln -s /mnt/c/Downloads ~/
 
@@ -14,50 +14,39 @@ git config --global author.email mkunten@users.noreply.github.com
 git config --global init.defaultBranch main
 git config --global ghq.root ~/dev/src
 
+echo "# prepare repositories"
+sudo install -dm 755 /etc/apt/keyrings
+curl -fSs https://mise.jdx.dev/gpg-key.pub | sudo tee /etc/apt/keyrings/mise-archive-keyring.asc 1> /dev/null
+echo "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.asc] https://mise.jdx.dev/deb stable main" | sudo tee /etc/apt/sources.list.d/mise.list
+# # for 26.04+
+# sudo add-apt-repository -y ppa:jdxcode/mise
+# sudo apt update -y
+# sudo apt install -y mise
+
 #
 echo "# update/install packages"
+sudo add-apt-repository -y ppa:jdxcode/mise
 sudo apt update && sudo apt upgrade -y
 sudo apt install -y build-essential \ # required to build python
   libssl-dev zlib1g-dev libbz2-dev libreadline-dev \
   libsqlite3-dev libncurses-dev tk-dev \
   libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
-  gh jq screen zip # utils
-
-#
-echo "# setup asdf"
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.15.0
-cat << 'EOS' >> ~/.bashrc
-
-# asdf
-if [ -d ~/.asdf ]; then
-  . ~/.asdf/asdf.sh
-  . ~/.asdf/completions/asdf.bash
-fi
-EOS
-. ~/.asdf/asdf.sh
-
-asdf_list="golang nodejs python"
-for lang in $asdf_list; do
-  echo "## asdf: $lang"
-  asdf plugin add $lang
-  asdf install $lang latest
-  asdf global $lang latest
-done
+  screen zip mise # utils
 
 #
 echo "# setup gh/go/ghq/peco"
 gh auth login
 go install golang.org/x/tools/cmd/...@latest
-go install github.com/x-motemen/ghq@latest
-go install github.com/peco/peco/cmd/peco@latest
-asdf reshim golang
 
 cat << 'EOS' >> ~/.bashrc
 
-# gcd
-function gcd() {
-  cd $(git config --global ghq.root)/$(ghq list | peco --query="$*")
-}
+# load .config/bash/conf.d/*.bash
+if [ -d "$HOME/.config/bash/conf.d" ]; then
+  for f in "$HOME/.config/bash/conf.d"/*.bash; do
+    [ -r "$f" ] && . "$f"
+  done
+  unset f
+fi
 EOS
 
 # dotfiles
@@ -70,15 +59,13 @@ for file in $(ls -1 dots); do
 done
 
 #
+echo "# setup other tools via mise"
+mise install
+
+#
 echo "misc"
 sudo update-alternatives --set editor /usr/bin/vim.basic
 cat << 'EOS' >> ~/.bashrc
-
-# open
-function open() {
-  cmd.exe /c start $(wslpath -w $1)
-}
-EOS
 
 echo "run 'exec $SHELL -l'"
 exit 0
