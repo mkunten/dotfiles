@@ -1,8 +1,8 @@
 #!/bin/bash
 # Custom fzf path completion for Alt-f, Alt-d, and Alt-i with fd
 
-type -p fd > /dev/null 2>&1 || return
-type -p fzf > /dev/null 2>&1 || return
+command -v fzf > /dev/null 2>&1 || return
+command -v fd > /dev/null 2>&1 || return
 
 # env
 fzf_common_opts=(
