@@ -39,17 +39,37 @@ _fzf_forced_completion() {
   local cur_word=""
   [[ "$cur_line" =~ [^[:space:]]+$ ]] && cur_word="$BASH_REMATCH"
 
+  local search_base="."
+  local path_prefix=""
+  if [[ "$cur_word" =~ ^/ ]]; then
+      search_base="/"
+      path_prefix="/"
+  elif [[ "$cur_word" =~ ^~ ]]; then
+      search_base="$HOME"
+      path_prefix="~/"
+  elif [[ "$cur_word" =~ ^\$ ]]; then
+      local var_raw=$(echo "$cur_word" | grep -oP '^\$\{?\w+\}?')
+      search_base=$(eval echo "$var_raw")
+      path_prefix="${var_raw}/"
+  elif [[ "$cur_word" =~ ^(\.\./)+ ]]; then
+      search_base="${BASH_REMATCH[0]}"
+      path_prefix="${BASH_REMATCH[0]}"
+  fi
+
   local selected
-  selected=$(fd "${typeargs[@]}" "${FD_COMMON_OPTS[@]}" . \
-    | fzf --query="$cur_word" --select-1 --exit-0)
+  selected=$(cd "$search_base" && \
+    fd "${typeargs[@]}" "${FD_COMMON_OPTS[@]}" . | \
+    fzf --query="${cur_word#$path_prefix}" --prompt="${path_prefix}" \
+      --select-1 --exit-0)
 
   if [[ -n "$selected" ]]; then
     local prefix="${cur_line%${cur_word}}"
     local suffix="${READLINE_LINE:$READLINE_POINT}"
-    local escaped_selected="${selected@Q}"
+    local escaped_selected=$(printf '%q' "$selected")
+    local final_path="${path_prefix}${escaped_selected}"
 
-    READLINE_LINE="${prefix}${escaped_selected}${suffix}"
-    READLINE_POINT=$((${#prefix} + ${#escaped_selected}))
+    READLINE_LINE="${prefix}${final_path}${suffix}"
+    READLINE_POINT=$((${#prefix} + ${#final_path}))
   fi
 }
 
