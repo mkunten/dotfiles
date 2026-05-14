@@ -67,5 +67,7 @@ echo "misc"
 sudo update-alternatives --set editor /usr/bin/vim.basic
 cat << 'EOS' >> ~/.bashrc
 
+winget.exe install equalsraf.win32yank
+
 echo "run 'exec $SHELL -l'"
 exit 0
