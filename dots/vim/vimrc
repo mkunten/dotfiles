@@ -23,15 +23,10 @@ endif
 " environment varialbles {{{1
 let $MYVIMRC = resolve($MYVIMRC)
 
-" script variables {{{1
-let $VIMHOME = expand('$HOME/.vim')
-let $VIMTMPDIR = expand('$VIMHOME/tmp')
-let s:undofile_dir = $VIMTMPDIR . '/undofiles'
-let s:swapfile_dir = $VIMTMPDIR . '/swapfiles'
-
-" Prepare directories {{{1
-call mkdir(s:undofile_dir, 'p')
-call mkdir(s:swapfile_dir, 'p')
+" global variables {{{1
+let g:vim_home = expand('$HOME/.vim')
+let g:vim_config_dir = g:vim_home . '/_config'
+let g:vim_tmp = g:vim_home . '/tmp'
 
 " Options {{{1
 " encoding {{{2
@@ -64,8 +59,10 @@ set helpheight=12
 set helplang=en
 set keywordprg=:help
 " edit {{{2
+" writebackup
+let &backupdir = g:vim_tmp
 " undo {{{3
-let &undodir = s:undofile_dir
+let &undodir = g:vim_tmp . '/undofiles'
 set undofile
 " motion {{{3
 set whichwrap& whichwrap+=<,>,[,]
@@ -102,8 +99,13 @@ set virtualedit=block
 set modeline
 set hidden
 set confirm
-let &directory = s:swapfile_dir
-set viminfofile=$VIMTMPDIR/.viminfo
+let &directory = g:vim_tmp . '/swapfiles'
+let &viminfofile = g:vim_tmp . '/.viminfo'
+
+" Prepare directories {{{1
+for s:dir in [&undodir, &directory]
+  if !isdirectory(s:dir) | call mkdir(s:dir, 'p') | endif
+endfor
 
 " Key Mappings {{{1
 " view {{{2
@@ -172,7 +174,7 @@ autocmd MyVimrc ColorScheme * call s:setColors()
 colorscheme desert
 
 " Other variables/commands/functions {{{1
-let g:netrw_home = $VIMTMPDIR
+let g:netrw_home = g:vim_tmp
 let g:tex_flavor = 'latex'
 
 " check timestamp
@@ -211,9 +213,10 @@ inoremap <silent> <C-u> <C-o>:call <SID>toggle_keymap_mk()<CR>
 
 " some commands for editing vim settings
 command! Evimrc edit $MYVIMRC
-command! Spvimrc sp $MYVIMRC
+command! Spvimrc split $MYVIMRC
 nnoremap <silent> <F5> :<C-u>source $MYVIMRC<CR>
   \ :echomsg '$MYVIMRC reloaded.'<CR>
+command! EConfig execute 'edit ' . g:vim_config_dir
 
 " show hilighting group under the cursor
 command! SyntaxInfo call my#util#get_syn_info()
@@ -239,12 +242,30 @@ endif
 packadd vim-jetpack
 
 " setup {{{2
-runtime! _config/jetpack.vim
-runtime! _config/jetpack/*
+let &runtimepath .= ',' . g:vim_config_dir
+runtime! jetpack.vim
+runtime! jetpack/*
+
+" syntax settings for markdown
+let g:markdown_fenced_languages = [
+  \   'bash', 'c', 'cpp', 'csharp', 'css', 'go',
+  \   'html', 'javascript', 'js=javascript', 'json',
+  \   'php', 'plantuml', 'python', 'ruby', 'rust',
+  \   'sass', 'sh', 'sql', 'toml', 'vim', 'xml', 'yaml'
+  \ ]
 
 " {{{1
 filetype plugin indent on
 syntax enable
+
+" win32yank
+if executable('win32yank.exe')
+  autocmd TextYankPost *
+        \ if v:event.operator == 'y'
+        \   && (v:event.regname == '' || v:event.regname == '+') |
+        \   call system('win32yank.exe -i --crlf', getreg(v:event.regname)) |
+        \ endif
+endif
 
 " #modeline {{{1
 " vim: fdm=marker fdl=4 fdc=3 et ts=2 sts=2

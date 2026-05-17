@@ -1,0 +1,5 @@
+lowercaseKeywords: false
+
+connections:
+  - driver: postgresql
+    dataSourceName: "host=/var/run/postgresql user=mkunten dbname=postgres sslmode=disable"

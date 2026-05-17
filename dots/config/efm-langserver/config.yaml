@@ -1,0 +1,10 @@
+version: 2
+
+tools:
+  sql-formatter: &sql-formatter
+    format-command: 'sql-formatter -l postgresql'
+    format-stdin: true
+
+languages:
+  sql:
+    - <<: *sql-formatter

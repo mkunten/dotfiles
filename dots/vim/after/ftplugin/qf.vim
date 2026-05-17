@@ -6,9 +6,9 @@ noremap <silent> <buffer> <expr> j <SID>jk(v:count1)
 noremap <silent> <buffer> <expr> k <SID>jk(-v:count1)
 
 noremap <silent> <buffer> <expr>
-  \ gg (v:count > 0 ? <SID>jk(v:count-line('.')) : <SID>gg(1))
+      \ gg (v:count > 0 ? <SID>jk(v:count-line('.')) : <SID>gg(1))
 noremap <silent> <buffer> <expr>
-  \ G  (v:count > 0 ? <SID>jk(v:count-line('.')) : <SID>gg(0))
+      \ G  (v:count > 0 ? <SID>jk(v:count-line('.')) : <SID>gg(0))
 
 noremap <buffer> p  <CR>zz<C-w>p
 
@@ -53,7 +53,7 @@ function! s:wraparound(n, max, motion) abort
     return s:modulo(a:n, a:max)
   else
     return (0 <= a:n && a:n < a:max) ? a:n :
-    \       0 < a:motion ? a:max-1 : 0
+          \       0 < a:motion ? a:max-1 : 0
   endif
 endfunction
 

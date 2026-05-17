@@ -10,24 +10,17 @@ let s:config = {
   \   'hook/close_quickfix/enable_exit': 0,
   \   'outputter/buffer/close_on_empty': 0
   \ },
-  \ 'jq': {
-  \   'command': 'jq',
-  \   'cmdopt': '.',
+  \ 'csharp/run': {
+  \   'exec': 'dotnet.exe run -c \${BUILD_CONFIG:-Debug}',
   \   'outputter': 'error',
   \   'outputter/error/success': 'buffer',
-  \   'outputter/error/error': 'message',
-  \   'outputter/message/log': 1
+  \   'outputter/error/error': 'quickfix'
   \ },
-  \ 'jqReplace': {
-  \   'command': 'jq',
-  \   'cmdopt': '.',
+  \ 'csharp/build': {
+  \   'exec': 'dotnet.exe build -c \${BUILD_CONFIG:-Debug}',
   \   'outputter': 'error',
-  \   'outputter/error/success': 'replace_region',
-  \   'outputter/error/error': 'message',
-  \   'outputter/message/log': 1
-  \ },
-  \ 'md': {
-  \   'outputter': 'browser'
+  \   'outputter/error/success': 'buffer',
+  \   'outputter/error/error': 'quickfix'
   \ },
   \ 'go/run': {
   \   'exec': 'go run .',
@@ -69,6 +62,31 @@ let s:config = {
   \   'outputter': 'error',
   \   'outputter/error/success': 'buffer',
   \   'outputter/error/error': 'quickfix',
+  \ },
+  \ 'jq': {
+  \   'command': 'jq',
+  \   'cmdopt': '.',
+  \   'outputter': 'error',
+  \   'outputter/error/success': 'buffer',
+  \   'outputter/error/error': 'message',
+  \   'outputter/message/log': 1
+  \ },
+  \ 'jqReplace': {
+  \   'command': 'jq',
+  \   'cmdopt': '.',
+  \   'outputter': 'error',
+  \   'outputter/error/success': 'replace_region',
+  \   'outputter/error/error': 'message',
+  \   'outputter/message/log': 1
+  \ },
+  \ 'md': {
+  \   'outputter': 'browser'
+  \ },
+  \ 'rg': {
+  \   'command': 'rg',
+  \   'exec': '%c --vimgrep %a',
+  \   'outputter': 'quickfix',
+  \   'outputter/quickfix/errorformat': '%f:%l:%c:%m',
   \ },
   \ 'swapfiles': {
   \   'exec': '%c %o',
@@ -118,6 +136,7 @@ command! -nargs=? -range Jq :<line1>,<line2>call s:jq('', <f-args>)
 command! -nargs=? -range JqQuickfix
   \ :<line1>,<line2>call s:jq('multi:buffer:quickfix', <f-args>)
 command! Swapfiles QuickRun swapfiles
+command! -nargs=+ -complete=file R :QuickRun rg -args <q-args>
 
 " keymaps
 nnoremap <expr><silent> <C-c> quickrun#is_running()

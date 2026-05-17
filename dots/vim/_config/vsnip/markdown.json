@@ -1,0 +1,12 @@
+{
+  "PlantUML Block": {
+    "prefix": "plantuml",
+    "body": [
+      "```plantuml",
+      "@startuml",
+      "$0",
+      "@enduml",
+      "```"
+    ]
+  }
+}

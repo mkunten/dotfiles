@@ -9,6 +9,7 @@ Jetpack 'thinca/vim-localrc'
 Jetpack 'ryanoasis/vim-webdevicons'
 Jetpack 'itchyny/lightline.vim', {'depends': ['gina', 'webdevicons', 'anzu']}
 Jetpack 'thinca/vim-zenspace'
+Jetpack 'powerman/vim-plugin-AnsiEsc'
 " utility
 Jetpack 'tyru/capture.vim', {'cmd': 'Capture'}
 Jetpack 'lambdalisue/gina.vim'
@@ -25,8 +26,10 @@ Jetpack 'tomtom/tcomment_vim' " n: gcc; v: gc
 Jetpack 'vim-scripts/diffchar.vim', {'cmd': 'Diffchar'}
 Jetpack 'thinca/vim-qfreplace', {'cmd': 'Qfreplace'}
 Jetpack 'mattn/emmet-vim'
-Jetpack 'h1mesuke/vim-alignta', {'cmd': 'Alignta'}
 Jetpack 'AndrewRadev/splitjoin.vim', {'cmd': ['SplitjoinSplit', 'SplitjoinJoin']}
+Jetpack 'junegunn/vim-easy-align'
+Jetpack 'junegunn/fzf'
+Jetpack 'junegunn/fzf.vim'
 " operator
 Jetpack 'kana/vim-operator-user'
 Jetpack 'kana/vim-operator-replace', {'depends': ['operator-user']}
@@ -57,4 +60,8 @@ Jetpack 'mattn/vim-lsp-settings'
 Jetpack 'mattn/vim-lsp-icons'
 Jetpack 'hrsh7th/vim-vsnip'
 Jetpack 'hrsh7th/vim-vsnip-integ'
+Jetpack 'rafamadriz/friendly-snippets'
+" filetype
+Jetpack 'mkunten/vim-mpe'
+Jetpack 'aklt/plantuml-syntax'
 call jetpack#end()

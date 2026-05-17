@@ -1,7 +1,8 @@
 #!/bin/bash
 # mise settings
 
-command -v mise > /dev/null 2>&1 || return
+MISE_BIN="$HOME/.local/bin/mise"
 
-eval "$(mise activate bash)"
-eval "$(mise completion bash)"
+if [ -x "$MISE_BIN" ]; then
+  eval "$("$MISE_BIN" activate bash)"
+fi
