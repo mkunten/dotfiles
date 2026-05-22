@@ -27,23 +27,28 @@ augroup lsp_install
 augroup END
 
 command! LspDebug let lsp_log_verbose=1 |
-  \ let lsp_log_file = g:vim_tmp . '/lsp.log'
+      \ let lsp_log_file = g:vim_tmp . '/lsp.log'
 
 let g:lsp_diagnostics_echo_cursor = 1
 " let g:lsp_diagnostics_virtual_text_align = "right"
 let g:asyncomplete_popup_delay = 200
 
-" efm-langserver
+let g:lsp_settings = get(g:, 'lsp_settings', {})
+let s:sqls_settings = {
+      \   'sqls': {
+      \     'disabled_features': [
+      \       'documentFormatting',
+      \       'documentRangeFormatting'
+      \     ]
+      \   }
+      \ }
+call extend(g:lsp_settings, s:sqls_settings)
+
+" register efm-langserver
 if executable('efm-langserver')
-  au User lsp_setup call lsp#register_server({
-        \ 'name': 'efm-langserver',
-        \ 'cmd': {server_info->['efm-langserver']},
-        \ 'allowlist': ['sql'],
+  autocmd User lsp_setup call lsp#register_server({
+        \   'name': 'efm-langserver',
+        \   'cmd': { server_info->['efm-langserver'] },
+        \   'allowlist': ['sql']
         \ })
 endif
-
-let g:lsp_settings = {
-      \  'sqls': {
-      \    'disabled_features': ['documentFormatting', 'documentRangeFormatting']
-      \  }
-      \}

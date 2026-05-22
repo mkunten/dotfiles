@@ -1,7 +1,4 @@
 " Startup {{{1
-if 0 | endif
-
-" set nocompatible
 
 augroup MyVimrc
   autocmd!
@@ -82,7 +79,9 @@ set wildmenu wildmode=longest:full,full
 set infercase
 " clipboard {{{3
 " default: clipboard=autoselect,exclude:cons\|linux
-set clipboard=autoselectplus,exclude:cons\|linux
+if has('clipboard')
+  set clipboard=autoselectplus,exclude:cons\|linux
+endif
 " indent {{{3
 set autoindent
 set smartindent

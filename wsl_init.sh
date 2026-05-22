@@ -1,84 +1,76 @@
 #!/bin/bash
-set -eu
+set -euo pipefail
 
-##
-#echo "# prepare dirs"
-#mkdir -p ~/bin ~/dev/src
-#ln -s /mnt/c/Documents ~/
-#ln -s /mnt/c/Downloads ~/
-#
-##
-#echo "# setup git"
-#git config --global author.name mkunten
-#git config --global author.email mkunten@users.noreply.github.com
-#git config --global init.defaultBranch main
-#git config --global ghq.root ~/dev/src
-#
-##
-#echo "# update/install packages"
-#sudo apt update && sudo apt upgrade -y
-#sudo apt install -y build-essential \
-#  libssl-dev zlib1g-dev libbz2-dev libreadline-dev \
-#  libsqlite3-dev libncurses-dev tk-dev \
-#  libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
-#  gh jq screen zip
-#
-##
-#echo "# setup asdf"
-#git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.15.0
-#cat << 'EOS' >> ~/.bashrc
-#
-## asdf
-#if [ -d ~/.asdf ]; then
-#  . ~/.asdf/asdf.sh
-#  . ~/.asdf/completions/asdf.bash
-#fi
-#EOS
-#. ~/.asdf/asdf.sh
-#
-#asdf_list="golang nodejs python"
-#for lang in $asdf_list; do
-#  echo "## asdf: $lang"
-#  asdf plugin add $lang
-#  asdf install $lang latest
-#  asdf global $lang latest
-#done
-#
-##
-#echo "# setup gh/go/ghq/peco"
-#gh auth login
-go install golang.org/x/tools/cmd/...@latest
-go install github.com/x-motemen/ghq@latest
-go install github.com/peco/peco/cmd/peco@latest
-asdf reshim golang
-
-cat << 'EOS' >> ~/.bashrc
-
-# gcd
-function gcd() {
-  cd $(git config --global ghq.root)/$(ghq list | peco --query="$*")
-}
-EOS
-
-# dotfiles
 repo=github.com/mkunten/dotfiles
-gh repo clone $repo ~/dev/src/$repo
-cd ~/dev/src/$repo
-cp -r bin/* ~/bin/
-for file in $(ls -1 dots); do
-  echo cp -r $file ~/.$file
-done
 
-#
+echo "# prepare dirs"
+mkdir -p ~/.local/bin ~/dev/src
+ln -s /mnt/c/Documents ~/
+ln -s /mnt/c/Downloads ~/
+
+echo "# update/install packages"
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y build-essential \
+  libssl-dev zlib1g-dev libbz2-dev libreadline-dev \
+  libsqlite3-dev libncurses-dev tk-dev \
+  libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
+  zip
+
+echo "# setup mise"
+curl https://mise.run | sh
+eval "$(~/.local/bin/mise activate bash)"
+
+echo "# setup dotfiles"
+mkdir -p ~/dev/src/$repo
+git clone https://$repo.git ~/dev/src/$repo
+cd ~/dev/src/$repo/dots
+for item in *; do
+  if [ -d "$item" ]; then
+    echo merge directory: $item
+    mkdir -p "$HOME/.$item"
+    rsync -a "$item/" "$HOME/.$item/"
+  else
+    echo copy file: $item
+    cp -r "$item" "$HOME/.$item"
+  fi
+done
+cd ~
+
+echo "# install tools"
+mise install go@latest node@latest
+hash -r
+mise install
+$(mise which go) install golang.org/x/tools/cmd/...@latest
+
+echo "# install windows tools"
+if command -v winget.exe &> /dev/null; then
+  if ! command -v win32yank.exe &> /dev/null; then
+    echo "win32yank.exe not found. Installing via winget..."
+    winget.exe install --id equalsraf.win32yank --silent
+  else
+    echo "win32yank.exe is already installed."
+  fi
+
+else
+  echo "Warning: winget.exe is not accessible from WSL."
+fi
+
 echo "misc"
 sudo update-alternatives --set editor /usr/bin/vim.basic
+
 cat << 'EOS' >> ~/.bashrc
 
-# open
-function open() {
-  cmd.exe /c start $(wslpath -w $1)
-}
+# load .config/bash/conf.d/*.bash
+if [ -d "$HOME/.config/bash/conf.d" ]; then
+  for f in "$HOME/.config/bash/conf.d"/*.bash; do
+      [ -r "$f" ] && . "$f"
+  done
+  unset f
+fi
 EOS
+
+echo "# gh auth"
+$(mise which gh) auth login
 
 echo "run 'exec $SHELL -l'"
 exit 0

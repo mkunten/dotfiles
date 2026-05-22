@@ -1,0 +1,29 @@
+# Core Settings
+[core]
+	autocrlf = false
+	pager = delta
+	quotepath = false
+[init]
+	defaultBranch = main
+[interactive]
+	diffFilter = delta --color-only
+[alias]
+	lg = log --graph --abbrev-commit --decorate --date=iso-local --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ad)%C(reset) %C(white)%s%C(reset) %C(dim yellow)%d%C(reset)%n          %C(bold magenta)Author: %an%C(reset); %C(bold magenta)Committer: %cn%C(reset)'
+
+# Identity and Authentification Settings
+[credential "https://github.com"]
+	helper = 
+	helper = !gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !gh auth git-credential
+[user]
+	email = 7124042+mkunten@users.noreply.github.com
+	name = mkunten
+
+# External Tools
+[delta]
+	navigate = true  # use n and N to move between diff sections
+	line-numbers = true
+[ghq]
+	root = ~/dev/src
