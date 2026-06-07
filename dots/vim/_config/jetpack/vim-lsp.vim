@@ -7,14 +7,15 @@ function! s:on_lsp_buffer_enabled() abort
   if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
   nmap <buffer> gd <plug>(lsp-definition)
   nmap <buffer> gs <plug>(lsp-document-symbol-search)
-  nmap <buffer> gS <plug>(lsp-workspace-symbol-search)
+  nmap <buffer> gg <plug>(lsp-workspace-symbol-search)
   nmap <buffer> gr <plug>(lsp-references)
   nmap <buffer> gi <plug>(lsp-implementation)
   nmap <buffer> gt <plug>(lsp-type-definition)
   nmap <buffer> gR <plug>(lsp-rename)
-  nmap <buffer> gc <plug>(lsp-code-action)
-  nmap <buffer> [g <plug>(lsp-previous-diagnostic)
-  nmap <buffer> ]g <plug>(lsp-next-diagnostic)
+  nmap <buffer> gA <plug>(lsp-code-action)
+  nmap <buffer> gw <plug>(lsp-document-diagnostics)
+  nmap <buffer> g[ <plug>(lsp-previous-diagnostic)
+  nmap <buffer> g] <plug>(lsp-next-diagnostic)
   nmap <buffer> K <plug>(lsp-hover)
   inoremap <expr> <cr> pumvisible() ? "\<c-y>\<cr>" : "\<cr>"
 endfunction
@@ -44,11 +45,26 @@ let s:sqls_settings = {
       \ }
 call extend(g:lsp_settings, s:sqls_settings)
 
+" register csharp-ls
+if executable('csharp-ls')
+  augroup VimLspCSharpLs
+    autocmd!
+    autocmd User lsp_setup call lsp#register_server({
+          \   'name': 'csharp-ls',
+          \   'cmd': {server_info->['csharp-ls']},
+          \   'allowlist': ['cs']
+          \ })
+  augroup END
+endif
+
 " register efm-langserver
 if executable('efm-langserver')
-  autocmd User lsp_setup call lsp#register_server({
-        \   'name': 'efm-langserver',
-        \   'cmd': { server_info->['efm-langserver'] },
-        \   'allowlist': ['sql']
-        \ })
+  augroup VimLspEfmLandserver
+    autocmd!
+    autocmd User lsp_setup call lsp#register_server({
+          \   'name': 'efm-langserver',
+          \   'cmd': { server_info->['efm-langserver'] },
+          \   'allowlist': ['sql']
+          \ })
+  augroup END
 endif

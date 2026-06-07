@@ -11,7 +11,7 @@ ln -s /mnt/c/Downloads ~/
 echo "# update/install packages"
 sudo apt update && sudo apt upgrade -y
 sudo apt install -y build-essential \
-  libssl-dev zlib1g-dev libbz2-dev libreadline-dev \
+  libicu-dev libssl-dev zlib1g-dev libbz2-dev libreadline-dev \
   libsqlite3-dev libncurses-dev tk-dev \
   libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
   zip
@@ -36,8 +36,11 @@ for item in *; do
 done
 cd ~
 
-echo "# install tools"
-mise install go@latest node@latest
+echo "# set env"
+source ~/dev/src/$repo/dots/config/bash/conf.d/_env.bash
+
+echo "# install go tools"
+mise install go@latest
 hash -r
 mise install
 $(mise which go) install golang.org/x/tools/cmd/...@latest
@@ -63,7 +66,7 @@ cat << 'EOS' >> ~/.bashrc
 # load .config/bash/conf.d/*.bash
 if [ -d "$HOME/.config/bash/conf.d" ]; then
   for f in "$HOME/.config/bash/conf.d"/*.bash; do
-      [ -r "$f" ] && . "$f"
+      [ -r "$f" ] && source "$f"
   done
   unset f
 fi
@@ -72,5 +75,5 @@ EOS
 echo "# gh auth"
 $(mise which gh) auth login
 
-echo "run 'exec $SHELL -l'"
+echo 'run "exec $SHELL -l"'
 exit 0
