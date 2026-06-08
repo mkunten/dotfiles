@@ -36,6 +36,9 @@ let g:asyncomplete_popup_delay = 200
 
 let g:lsp_settings = get(g:, 'lsp_settings', {})
 let s:sqls_settings = {
+      \  'efm-langserver': {
+      \    'disabled': v:false
+      \  },
       \   'sqls': {
       \     'disabled_features': [
       \       'documentFormatting',

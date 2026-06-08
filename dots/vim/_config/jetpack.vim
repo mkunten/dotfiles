@@ -64,4 +64,5 @@ Jetpack 'rafamadriz/friendly-snippets'
 " filetype
 Jetpack 'mkunten/vim-mpe'
 Jetpack 'aklt/plantuml-syntax'
+Jetpack 'sqls-server/sqls.vim'
 call jetpack#end()
