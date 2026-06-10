@@ -47,18 +47,18 @@ function! s:get_syn_attr(synid) abort
 endfunction
 function! my#util#get_syn_info() abort
   let baseSyn = s:get_syn_attr(s:get_syn_id(0))
-  echo 'name: ' . baseSyn.name .
-    \ ' ctermfg: ' . baseSyn.ctermfg .
-    \ ' ctermbg: ' . baseSyn.ctermbg .
-    \ ' guifg: ' . baseSyn.guifg .
-    \ ' guibg: ' . baseSyn.guibg
+  echo 'name: ' .. baseSyn.name .
+    \ ' ctermfg: ' .. baseSyn.ctermfg .
+    \ ' ctermbg: ' .. baseSyn.ctermbg .
+    \ ' guifg: ' .. baseSyn.guifg .
+    \ ' guibg: ' .. baseSyn.guibg
   let linkedSyn = s:get_syn_attr(s:get_syn_id(1))
   echo 'link to'
-  echo 'name: ' . linkedSyn.name .
-    \ ' ctermfg: ' . linkedSyn.ctermfg .
-    \ ' ctermbg: ' . linkedSyn.ctermbg .
-    \ ' guifg: ' . linkedSyn.guifg .
-    \ ' guibg: ' . linkedSyn.guibg
+  echo 'name: ' .. linkedSyn.name .
+    \ ' ctermfg: ' .. linkedSyn.ctermfg .
+    \ ' ctermbg: ' .. linkedSyn.ctermbg .
+    \ ' guifg: ' .. linkedSyn.guifg .
+    \ ' guibg: ' .. linkedSyn.guibg
 endfunction
 
 " http://d.hatena.ne.jp/thinca/20090530/1243615055

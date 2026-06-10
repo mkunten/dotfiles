@@ -105,9 +105,9 @@ call extend(g:quickrun_config, s:config)
 function! s:close_quickrunwindow() abort
   for wnr in range(1, winnr('$'))
     if getwinvar(wnr, '&filetype') is# 'quickrun'
-      execute wnr . 'wincmd w'
+      execute wnr .. 'wincmd w'
       close
-      execute winnr('#') . 'wincmd w'
+      execute winnr('#') .. 'wincmd w'
       break
     endif
   endfor
@@ -117,7 +117,7 @@ endfunction
 function! s:jq(...) range abort
   echomsg mode()
     if a:0 > 0
-      let cmdopt = ' -cmdopt "' . a:1 . '"'
+      let cmdopt = ' -cmdopt "' .. a:1 .. '"'
     else
       let cmdopt = ''
     endif

@@ -1,13 +1,13 @@
 " vim-lsp.vim
 
 function! s:on_lsp_buffer_enabled() abort
-  echomsg "lsp enabled"
+  echomsg "lsp enabled " .. &filetype
   setlocal omnifunc=lsp#complete
   setlocal signcolumn=yes
   if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
   nmap <buffer> gd <plug>(lsp-definition)
   nmap <buffer> gs <plug>(lsp-document-symbol-search)
-  nmap <buffer> gg <plug>(lsp-workspace-symbol-search)
+  nmap <buffer> gG <plug>(lsp-workspace-symbol-search)
   nmap <buffer> gr <plug>(lsp-references)
   nmap <buffer> gi <plug>(lsp-implementation)
   nmap <buffer> gt <plug>(lsp-type-definition)
@@ -23,12 +23,10 @@ endfunction
 augroup lsp_install
   autocmd!
   autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-  " workaround: force filetype processing when launching with a filename
-  autocmd BufEnter * ++once let &filetype = &filetype
 augroup END
 
 command! LspDebug let lsp_log_verbose=1 |
-      \ let lsp_log_file = g:vim_tmp . '/lsp.log'
+      \ let lsp_log_file = g:vim_tmp .. '/lsp.log'
 
 let g:lsp_diagnostics_echo_cursor = 1
 " let g:lsp_diagnostics_virtual_text_align = "right"

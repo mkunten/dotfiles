@@ -76,7 +76,7 @@ function! s:jk(motion)
   if pos == line('.') - 1
     return 0 < a:motion ? "\<C-e>" : "\<C-y>"
   endif
-  return "\<Esc>" . (pos + 1) . 'G'
+  return "\<Esc>" .. (pos + 1) .. 'G'
 endfunction
 
 function! s:gg(gotop)
@@ -91,5 +91,5 @@ function! s:gg(gotop)
   while cur != pos && list[pos].bufnr == 0
     let pos = pos + m
   endwhile
-  return (pos + 1) . 'G'
+  return (pos + 1) .. 'G'
 endfunction

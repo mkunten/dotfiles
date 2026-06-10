@@ -1,4 +1,7 @@
 " Startup {{{1
+if 0 | endif
+
+" set nocompatible
 
 augroup MyVimrc
   autocmd!
@@ -10,7 +13,7 @@ if has('vim_starting') && has('reltime')
   " vim --cmd 'profile start profile.txt' --cmd 'profile file $HOME/.vimrc' +q && vim profile.txt
   let s:startuptime = reltime()
   autocmd MyVimrc VimEnter * let s:startuptime = reltime(s:startuptime) | redraw
-  \ | echomsg 'startuptime: ' . reltimestr(s:startuptime)
+  \ | echomsg 'startuptime: ' .. reltimestr(s:startuptime)
 endif
 
 if has('vim_starting')
@@ -21,9 +24,15 @@ endif
 let $MYVIMRC = resolve($MYVIMRC)
 
 " global variables {{{1
-let g:vim_home = expand('$HOME/.vim')
-let g:vim_config_dir = g:vim_home . '/_config'
-let g:vim_tmp = g:vim_home . '/tmp'
+if isdirectory(expand('$XDG_CONFIG_HOME/vim'))
+  let g:vim_home = expand('$XDG_CONFIG_HOME/vim')
+else
+  let g:vim_home = expand('$HOME/.vim')
+endif
+let g:vim_custom_dir = g:vim_home .. '/_custom'
+let g:vim_cache_dir = empty($XDG_CACHE_HOME)
+      \ ? g:vim_home .. '/cache'
+      \ : expand('$XDG_CACHE_HOME/vim')
 
 " Options {{{1
 " encoding {{{2
@@ -48,6 +57,7 @@ set laststatus=2
 set cmdheight=2
 set showtabline=2
 set belloff=all
+set foldlevel=99
 " split {{{3
 set splitbelow splitright
 set diffopt& diffopt+=vertical
@@ -56,11 +66,6 @@ set helpheight=12
 set helplang=en
 set keywordprg=:help
 " edit {{{2
-" writebackup
-let &backupdir = g:vim_tmp
-" undo {{{3
-let &undodir = g:vim_tmp . '/undofiles'
-set undofile
 " motion {{{3
 set whichwrap& whichwrap+=<,>,[,]
 set backspace& backspace+=indent,eol,start
@@ -79,9 +84,7 @@ set wildmenu wildmode=longest:full,full
 set infercase
 " clipboard {{{3
 " default: clipboard=autoselect,exclude:cons\|linux
-if has('clipboard')
-  set clipboard=autoselectplus,exclude:cons\|linux
-endif
+set clipboard=unnamedplus
 " indent {{{3
 set autoindent
 set smartindent
@@ -98,11 +101,14 @@ set virtualedit=block
 set modeline
 set hidden
 set confirm
-let &directory = g:vim_tmp . '/swapfiles'
-let &viminfofile = g:vim_tmp . '/.viminfo'
+let &backupdir = g:vim_cache_dir .. '/backup//'
+let &directory = g:vim_cache_dir .. '/swapfiles//'
+let &undodir = g:vim_cache_dir .. '/undofiles'
+let &viminfofile = g:vim_cache_dir .. '/.viminfo'
+set undofile
 
 " Prepare directories {{{1
-for s:dir in [&undodir, &directory]
+for s:dir in [&backupdir, &directory, &undodir]
   if !isdirectory(s:dir) | call mkdir(s:dir, 'p') | endif
 endfor
 
@@ -111,7 +117,7 @@ endfor
 " redraw
 nnoremap <silent> <C-l> :<C-u>nohlsearch<CR><C-l>
 " highlight the previously changed or yanked text
-nnoremap <expr> g<C-l> '`[' . strpart(getregtype(), 0, 1) . '`]'
+nnoremap <expr> g<C-l> '`[' .. strpart(getregtype(), 0, 1) .. '`]'
 
 " edit {{{2
 " Map Y to act like D and C
@@ -173,7 +179,7 @@ autocmd MyVimrc ColorScheme * call s:setColors()
 colorscheme desert
 
 " Other variables/commands/functions {{{1
-let g:netrw_home = g:vim_tmp
+let g:netrw_home = g:vim_cache_dir .. '/netrw'
 let g:tex_flavor = 'latex'
 
 " check timestamp
@@ -215,7 +221,7 @@ command! Evimrc edit $MYVIMRC
 command! Spvimrc split $MYVIMRC
 nnoremap <silent> <F5> :<C-u>source $MYVIMRC<CR>
   \ :echomsg '$MYVIMRC reloaded.'<CR>
-command! EConfig execute 'edit ' . g:vim_config_dir
+command! ECustom execute 'edit ' .. g:vim_custom_dir
 
 " show hilighting group under the cursor
 command! SyntaxInfo call my#util#get_syn_info()
@@ -230,21 +236,6 @@ autocmd MyVimrc BufWritePre *
 autocmd MyVimrc BufWritePost *
  \ call my#util#remove_file_if_empty(expand('%:p'))
 
-" plugins {{{1
-" install jetpack {{{2
-let s:jetpackfile = expand('<sfile>:p:h') ..
- \ '/pack/jetpack/opt/vim-jetpack/plugin/jetpack.vim'
-let s:jetpackurl = "https://raw.githubusercontent.com/tani/vim-jetpack/master/plugin/jetpack.vim"
-if !filereadable(s:jetpackfile)
-  call system(printf('curl -fsSLo %s --create-dirs %s', s:jetpackfile, s:jetpackurl))
-endif
-packadd vim-jetpack
-
-" setup {{{2
-let &runtimepath .= ',' . g:vim_config_dir
-runtime! jetpack.vim
-runtime! jetpack/*
-
 " syntax settings for markdown
 let g:markdown_fenced_languages = [
   \   'bash', 'c', 'cpp', 'csharp', 'css', 'go',
@@ -253,18 +244,43 @@ let g:markdown_fenced_languages = [
   \   'sass', 'sh', 'sql', 'toml', 'vim', 'xml', 'yaml'
   \ ]
 
+" plugins {{{1
+" install jetpack {{{2
+let s:jetpackfile = g:vim_home
+      \ .. '/pack/jetpack/opt/vim-jetpack/plugin/jetpack.vim'
+let s:jetpackurl = "https://raw.githubusercontent.com/tani/vim-jetpack/master/plugin/jetpack.vim"
+if !filereadable(s:jetpackfile)
+  call system(printf('curl -fsSLo %s --create-dirs %s', s:jetpackfile, s:jetpackurl))
+endif
+packadd vim-jetpack
+
+" setup {{{2
+let &runtimepath = g:vim_custom_dir .. ',' .. &runtimepath
+runtime! jetpack.vim
+runtime! jetpack/*
+
 " {{{1
 filetype plugin indent on
 syntax enable
 
 " win32yank
 if executable('win32yank.exe')
-  autocmd TextYankPost *
+  autocmd MyVimrc TextYankPost *
         \ if v:event.operator == 'y'
         \   && (v:event.regname == '' || v:event.regname == '+') |
         \   call system('win32yank.exe -i --crlf', getreg(v:event.regname)) |
         \ endif
 endif
+
+" workaround: force reopen file to resolve event handling
+"             with vim started with filename
+autocmd MyVimrc VimEnter * call s:smart_reedit()
+
+function! s:smart_reedit()
+  if expand('%') != '' && &buftype == ''
+    edit! %
+  endif
+endfunction
 
 " #modeline {{{1
 " vim: fdm=marker fdl=4 fdc=3 et ts=2 sts=2

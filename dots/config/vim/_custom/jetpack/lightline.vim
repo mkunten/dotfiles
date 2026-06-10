@@ -33,9 +33,9 @@ let g:lightline = {
   \   'll_status': '%{&modified ? "+" : (&ro ? "⭤" : "-")}',
   \   'll_linecolnum': '%4l/%L:%3c',
   \   'll_charinfo': '%04B',
-  \   'll_filetype': '%{&filetype !=# "" ? &filetype . " " . WebDevIconsGetFileTypeSymbol() : "*no ft*"}',
-  \   'll_fileinfo': '%{&fileencoding !=# "" ? &fileencoding : &encoding}%{&ff !=? "unix" ? "[" . &ff . "]" : ""}',
-  \   'll_cwd': '%#comment#%{getcwd() . "/"}%*'
+  \   'll_filetype': '%{&filetype !=# "" ? &filetype .. " " .. WebDevIconsGetFileTypeSymbol() : "*no ft*"}',
+  \   'll_fileinfo': '%{&fileencoding !=# "" ? &fileencoding : &encoding}%{&fileformat !=? "unix" ? "[" .. &fileformat .. "]" : ""}',
+  \   'll_cwd': '%#comment#%{getcwd() .. "/"}%*'
   \ },
   \ 'component_function': {
   \   'll_gina': 'my#lightline#gina_status',

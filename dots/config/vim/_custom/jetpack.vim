@@ -1,6 +1,6 @@
 " _config/jetpack.vim
 
-call jetpack#begin()
+call jetpack#begin(g:vim_home)
 Jetpack 'tani/vim-jetpack', {'opt': 1} "bootstrap
 " environment
 Jetpack 'vim-jp/vimdoc-ja'
@@ -30,6 +30,7 @@ Jetpack 'AndrewRadev/splitjoin.vim', {'cmd': ['SplitjoinSplit', 'SplitjoinJoin']
 Jetpack 'junegunn/vim-easy-align'
 Jetpack 'junegunn/fzf'
 Jetpack 'junegunn/fzf.vim'
+Jetpack 'thinca/vim-template'
 " operator
 Jetpack 'kana/vim-operator-user'
 Jetpack 'kana/vim-operator-replace', {'depends': ['operator-user']}

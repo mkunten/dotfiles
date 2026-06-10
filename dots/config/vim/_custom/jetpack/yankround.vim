@@ -1,5 +1,7 @@
 " _config/yankround.vim
 
+let g:yankround_dir = g:vim_cache_dir .. '/yankround'
+
 nmap p <Plug>(yankround-p)
 xmap p <Plug>(yankround-p)
 nmap P <Plug>(yankround-P)
